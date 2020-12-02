@@ -1,9 +1,8 @@
-#!/usr/bin/env python
-
 import os, sys
 from codecs import open
 from dataclasses import dataclass
 
+extensions = ['.png', '.jpg', '.gif']
 
 @dataclass
 class Html:
@@ -22,7 +21,7 @@ class Writer:
 
     @staticmethod
     def is_image(path: str) -> bool:
-        return any([path.endswith(ext) for ext in ['.png', '.jpg']])
+        return any([path.endswith(ext) for ext in extensions])
 
     @staticmethod
     def get_id(filename: str) -> str:
@@ -82,58 +81,63 @@ class Writer:
         To seperate different chapters with the same id, you can use
         e.g. '123456-1-003.png'
         """
-        self.version = 20201023
+        self.version = 20210127
         self.add_styles({
             'body': {
                 'background': 'black',
                 'margin': 0,
-                'width': '300%',
+                'width': '200%',
+                'color': 'white',
+                'user-select': 'none'
             },
             'img': {
                 'display': 'block',
                 'margin': '0 auto',
             },
-            'p, span': {
-                'text-align': 'center',
-                'color': 'white',
-                'font-size': '100px',
-                'margin': 0
-            },
-            '#tab': {
+            '#select': {
+                'font-size': '4em',
                 'position': 'fixed',
-                'width': '100%',
-                'bottom': 0,
-                'left': 0,
-                'white-space': 'nowrap',
-                'overflow': 'auto',
+                'line-height': 0.5,
+                'top': '50%',
+                'left': '50%',
+                'z-index': 1,
             },
-            'span': {
-                'padding': '0 0.5em',
-                'user-select': 'none',
-            },
-            '.selected': {
-                'color': 'red'
+            '#content': {
+                'text-align': 'center',
+                'z-index': 0,
             }
         })
         # js madness
         self.html.script = [
-            "Array.from(document.getElementsByTagName('span')).forEach(s=>s.addEventListener('click',()=>{Array.from(document.getElementsByTagName('p')).forEach(p=>p.style.display=s.classList.contains('selected')||p.classList.contains(s.innerText)?'block':'none');Array.from(document.getElementsByTagName('span')).forEach(t=>t.classList.remove('selected'));s.classList.toggle('selected');window.scroll({top:0})}));"
+            "document.body.scrollLeft=document.body.clientWidth/2;const content=document.getElementById('content'),select=document.getElementById('select');select.style.marginTop= -select.offsetHeight/2+'px';select.style.marginLeft= -select.offsetWidth/2+'px';select.style.display='none';Array.from(content.children).forEach(p=>p.addEventListener('click',()=>{if(content.style.filter==='none'||!content.style.filter){content.style.filter='brightness(10%)';select.style.display='inline'}else{content.style.filter=select.style.display='none'}}));Array.from(select.children).forEach(p=>p.addEventListener('click',()=>{if(p.style.filter==='none'||!p.style.filter){p.style.filter='brightness(30%)';document.getElementById(p.innerText).style.display='none'}else{p.style.filter='none';document.getElementById(p.innerText).style.display='block'}document.body.scrollTop=0}));"
         ]
-        endl = '\n'
-        gs = []
+
+        # select
+        fs = {}
+        self.html.body.append('<div id="select">')
         for f in self.files:
-            # 'g' because it's '/g/{id}'
-            g = self.get_id(f)
-            if g not in gs:
-                gs.append(g)
-                self.html.body.append(f'<p class="{g}">{g}</p>')
-            self.html.body.append(f'<p class="{g}"><img alt="{f}" src="{f}"/></p>')
-        self.html.body.append(f'<div id="tab">\n{endl.join([f"<span>{g}</span>" for g in gs])}\n</div>')
+            i = self.get_id(f)
+            if i not in fs:
+                self.html.body.append(f'\t<p>{i}</p>')
+                fs[i] = []
+            fs[i].append(f)
+        self.html.body.append('</div>')
+        # images
+        self.html.body.append('<div id="content">')
+        # for each id
+        for i, l in fs.items():
+            self.html.body.append(f'\t<p id="{i}">')
+            self.html.body.append(f'\t\t{i}')
+            for f in l:
+                self.html.body.append(f'\t\t<img alt="{f}" src="{f}"/>')
+            self.html.body.append('\t</p>')
+        self.html.body.append('</div>')
 
 
+print(sys.argv)
 if len(sys.argv) > 1 and os.path.exists(sys.argv[1]):
     os.chdir(sys.argv[1])
 
-w = Writer('!Readme.html')
+w = Writer('0.html')
 w.top_to_bottom()
 w.write()
