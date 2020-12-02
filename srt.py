@@ -4,7 +4,7 @@ import os, re
 
 sh = timedelta(seconds=-1)
 # os.chdir(d)
-t = re.compile('(\d\d:){2}\d{2},\d{3}\s-->\s(\d\d:){2}\d{2},\d{3}')
+t = re.compile(r'(\d\d:){2}\d{2},\d{3}\s-->\s(\d\d:){2}\d{2},\d{3}')
 if not os.path.exists('shifted'):
     os.mkdir('shifted')
 for file in [f for f in os.listdir() if f.endswith('.srt')]:

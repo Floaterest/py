@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 extensions = ['.png', '.jpg', '.gif']
 
+
 @dataclass
 class Html:
     title: list
