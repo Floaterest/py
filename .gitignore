@@ -3,6 +3,9 @@
 
 # test files
 t[0-9].py
+*.png
+*.jpg
+*.gif
 *.txt
 *.json
 *.html
