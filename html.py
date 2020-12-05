@@ -12,6 +12,7 @@ EXTENSIONS = ['.png', '.jpg', '.gif']
 
 @dataclass
 class Mode:
+    name: str
     style: dict
     script: str
 
@@ -29,14 +30,18 @@ class Config:
 CONFIG = 'config.json'
 with open(CONFIG, 'r') as f:
     config = Config(**json.load(f)[os.path.basename(__file__)])
-    modes = config.modes
 
 
 def is_image(fn: str) -> bool:
     return any([fn.endswith(ext) for ext in EXTENSIONS])
 
 
-def create_style(css: dict):
+def write_all_text(fn: str, s: str):
+    with open(fn, 'w', 'utf8') as f:
+        f.write(s)
+
+
+def css_to_str(css: dict):
     return '\n'.join([
         selector + '{\n' + '\n'.join([
             f'\t{k}: {v};' for k, v in style.items()
@@ -46,10 +51,10 @@ def create_style(css: dict):
 
 class Writer:
     def __init__(self, dest: str, mode: str):
-        assert mode in modes, f"'{mode}' is not a valid mode!"
+        assert mode in config.modes, f"'{mode}' is not a valid mode!"
 
         self.dest = dest
-        self.mode = mode
+        self.mode = Mode(name=mode, **config.modes[mode])
         self.files = [f for f in os.listdir() if is_image(f)]
         # region html
         self.html = ET.Element('html')
@@ -61,7 +66,12 @@ class Writer:
         })
         ET.SubElement(head, 'title').text = os.path.basename(os.getcwd())
 
-        ET.SubElement(head, 'style').text = create_style(modes[mode]['style'])
+        # add style
+        write_all_text(href := f'./{self.dest}.css', css_to_str(self.mode.style))
+        ET.SubElement(head, 'link',
+                      rel='stylesheet',
+                      type='text/css',
+                      href=href)
         # endregion head
         # endregion html
 
@@ -98,13 +108,16 @@ class Writer:
         # endregion content
         # endregion body
         # add javascript
-        ET.SubElement(self.html, 'script', type='text/javascript').text = modes['tab']['script']
+        write_all_text(src := f'./{self.dest}.js', self.mode.script)
+        ET.SubElement(self.html, 'script',
+                      type='application/javascript',
+                      src=src).text = ''
 
     def write(self):
-        exec(f'self.{self.mode}()')
-
-        with open(self.dest, 'w', 'utf8') as f:
-            f.write(xml.dom.minidom.parseString(ET.tostring(self.html)).toprettyxml())
+        exec(f'self.{self.mode.name}()')
+        s = ET.tostring(self.html)
+        with open(self.dest + '.html', 'w', 'utf8') as f:
+            f.write(xml.dom.minidom.parseString(s).toprettyxml())
 
 
 if len(sys.argv) > 1:
