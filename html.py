@@ -4,6 +4,7 @@ import json
 from codecs import open
 from dataclasses import dataclass
 import xml.etree.cElementTree as ET
+import xml.dom.minidom
 
 # an image is defined as files with these extensions
 EXTENSIONS = ['.png', '.jpg', '.gif']
@@ -100,9 +101,11 @@ class Writer:
         ET.SubElement(self.html, 'script', type='text/javascript').text = modes['tab']['script']
 
     def write(self):
-        # exec(f'self.{self.mode}()')
-        self.tab()
+        exec(f'self.{self.mode}()')
+
         ET.ElementTree(self.html).write(self.dest, 'utf8')
+        with open(self.dest, 'w', 'utf8') as f:
+            f.write(xml.dom.minidom.parseString(ET.tostring(self.html)).toprettyxml())
 
 
 if len(sys.argv) > 1:
