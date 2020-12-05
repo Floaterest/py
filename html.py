@@ -103,7 +103,6 @@ class Writer:
     def write(self):
         exec(f'self.{self.mode}()')
 
-        ET.ElementTree(self.html).write(self.dest, 'utf8')
         with open(self.dest, 'w', 'utf8') as f:
             f.write(xml.dom.minidom.parseString(ET.tostring(self.html)).toprettyxml())
 
