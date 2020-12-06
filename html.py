@@ -111,7 +111,7 @@ class Writer:
         write_all_text(src := f'./{self.dest}.js', self.mode.script)
         ET.SubElement(self.html, 'script',
                       type='application/javascript',
-                      src=src).text = ''
+                      src=src).text = ' '
 
     def write(self):
         exec(f'self.{self.mode.name}()')
