@@ -1,6 +1,4 @@
-import os
-import sys
-import json
+import os, json, argparse
 from codecs import open
 from dataclasses import dataclass
 import xml.etree.cElementTree as ET
@@ -120,8 +118,10 @@ class Writer:
             f.write(xml.dom.minidom.parseString(s).toprettyxml())
 
 
-if len(sys.argv) > 1:
-    assert os.path.exists(sys.argv[1]), f"'{sys.argv[1]}' is not a valid directory!"
-    os.chdir(sys.argv[1])
+parser = argparse.ArgumentParser(description='generate a gallary viewer with html')
+parser.add_argument('path', type=str, nargs='?', default=os.getcwd(),
+                    help='directory path (quoted with double quote)')
 
+args = parser.parse_args()
+os.chdir(args.path)
 Writer(config.dest, config.mode).write()
