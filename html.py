@@ -54,6 +54,9 @@ class Writer:
         self.dest = dest
         self.mode = Mode(name=mode, **config.modes[mode])
         self.files = [f for f in os.listdir() if is_image(f)]
+
+        assert self.files, os.getcwd()+' does not contain any images!'
+
         # region html
         self.html = ET.Element('html')
         # region head
