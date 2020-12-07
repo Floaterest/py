@@ -7,7 +7,6 @@ t[0-9].py
 *.jpg
 *.gif
 *.txt
-*.json
 *.html
 
 # Byte-compiled / optimized / DLL files
