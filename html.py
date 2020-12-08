@@ -39,12 +39,21 @@ def write_all_text(fn: str, s: str):
         f.write(s)
 
 
-def css_to_str(css: dict):
-    return '\n'.join([
-        selector + '{\n' + '\n'.join([
-            f'\t{k}: {v};' for k, v in style.items()
-        ]) + '\n}' for selector, style in css.items()
-    ])
+def css_to_str(css, ind=0):
+    # if value is an object
+    if isinstance(css, dict):
+        if ind:
+            return '{\n' + '\n'.join([
+                '\t' * ind + k + css_to_str(v, ind + 1)
+                for k, v in css.items()
+            ]) + '\n' + '\t' * (ind - 1) + '}'
+        else:
+            return '\n'.join([
+                k + css_to_str(v, ind + 1)
+                for k, v in css.items()
+            ])
+    else:  # str, int or float
+        return f': {css};'
 
 
 class Writer:
@@ -55,7 +64,7 @@ class Writer:
         self.mode = Mode(name=mode, **config.modes[mode])
         self.files = [f for f in os.listdir() if is_image(f)]
 
-        assert self.files, os.getcwd()+' does not contain any images!'
+        assert self.files, os.getcwd() + ' does not contain any images!'
 
         # region html
         self.html = ET.Element('html')
@@ -85,6 +94,7 @@ class Writer:
 
         # region select
         select = ET.SubElement(body, 'div', id='select')
+        ET.SubElement(select, 'code', id='inverse').text = 'inverse'
 
         fs = {}
         for f in self.files:
