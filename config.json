@@ -1,36 +1,54 @@
 {
-    "html.py": {
-        "dest": "0",
-        "mode": "tab",
-        "modes": {
-            "tab": {
-                "style": {
-                    "body": {
-                        "background": "black",
-                        "margin": 0,
-                        "width": "200%",
-                        "color": "white",
-                        "user-select": "none"
-                    },
-                    "img": {
-                        "display": "block",
-                        "margin": "0 auto"
-                    },
-                    "#select": {
-                        "font-size": "4em",
-                        "position": "fixed",
-                        "line-height": 0.5,
-                        "top": "50%",
-                        "left": "50%",
-                        "z-index": 1
-                    },
-                    "#content": {
-                        "text-align": "center",
-                        "z-index": 0
-                    }
-                },
-                "script": "document.body.scrollLeft = document.body.clientWidth / 2;\n\nconst content = document.getElementById('content'),\n\tselect = document.getElementById('select');\nselect.style.marginTop = -select.offsetHeight / 2 + 'px';\nselect.style.marginLeft = -select.offsetWidth / 2 + 'px';\nselect.style.display = 'none';\n\nArray.from(content.children).forEach(p => p.addEventListener('click', () => {\n\tif (content.style.filter === 'none' || !content.style.filter) {\n\t\tcontent.style.filter = 'brightness(10%)';\n\t\tselect.style.display = 'inline';\n\t} else {\n\t\tcontent.style.filter = select.style.display = 'none';\n\t}\n}));\n\nArray.from(select.children).forEach(p => p.addEventListener('click', () => {\n\tif (p.style.filter === 'none' || !p.style.filter) {\n\t\tp.style.filter = 'brightness(30%)';\n\t\tdocument.getElementById(p.innerText).style.display = 'none';\n\t} else {\n\t\tp.style.filter = 'none';\n\t\tdocument.getElementById(p.innerText).style.display = 'block';\n\t}\n\tdocument.body.scrollTop = 0;\n}));"
-            }
-        }
-    }
+	"html.py": {
+		"dest": "0",
+		"mode": "tab",
+		"modes": {
+			"tab": {
+				"style": {
+					"body": {
+						"background": "black",
+						"margin": 0,
+						"color": "white",
+						"font-size": "6em",
+						"user-select": "none"
+					},
+					"@media screen and (orientation: portrait)": {
+						"body": {
+							"width": "100%"
+						}
+					},
+					"@media screen and (orientation: landscape)": {
+						"body": {
+							"width": "200%"
+						}
+					},
+					"img,p": {
+						"display": "block",
+						"margin": "0 auto"
+					},
+					"#select": {
+						"display": "none",
+						"z-index": 1,
+						"position": "fixed",
+						"top": 0,
+						"left": 0,
+						"height": "100%",
+						"overflow-y": "scroll"
+					},
+					"#select p": {
+						"padding": "10px",
+						"margin": "0 auto"
+					},
+					"#content": {
+						"text-align": "center",
+						"z-index": 0
+					},
+					".off": {
+						"filter": "brightness(30%)"
+					}
+				},
+				"script": "const content = document.getElementById('content'),\n\tselect = document.getElementById('select');\n\ncontent.addEventListener('click', () => {\n\tif(content.style.filter) content.style.filter = select.style.display = '';\n\telse{\n\t\tcontent.style.filter = 'brightness(10%)';\n\t\tselect.style.display = 'inline';\n\t}\n});\nArray.from(select.getElementsByTagName('p')).forEach(p => p.addEventListener('click', () => {\n\tp.classList.toggle('off');\n\tdocument.getElementById(p.innerText).style.display = p.classList.contains('off') ? 'none' : 'block';\n}));\n\ndocument.getElementById('inverse').addEventListener('click', () => Array.from(select.getElementsByTagName('p')).forEach(p => p.click()));"
+			}
+		}
+	}
 }
