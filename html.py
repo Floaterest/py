@@ -13,6 +13,7 @@ class Mode:
     name: str
     style: dict
     script: str
+    version:int
 
 
 @dataclass
@@ -91,7 +92,6 @@ class Writer:
             return fn[:-8]
 
         # region body
-
         # region select
         select = ET.SubElement(self.body, 'div', id='select')
         ET.SubElement(select, 'code', id='inverse').text = 'inverse'
@@ -128,6 +128,7 @@ class Writer:
         exec(f'self.{self.mode.name}()')
         s = ET.tostring(self.html)
         with open(self.dest + '.html', 'w', 'utf8') as f:
+            f.write(f'<!-- Version {self.mode.version} -->\n')
             f.write(xml.dom.minidom.parseString(s).toprettyxml())
 
 
