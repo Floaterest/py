@@ -13,7 +13,7 @@ class Mode:
     name: str
     style: dict
     script: str
-    version:int
+    version: int
 
 
 @dataclass
@@ -27,8 +27,8 @@ class Config:
 
 
 CONFIG = 'config.json'
-with open(CONFIG, 'r') as f:
-    config = Config(**json.load(f)[os.path.basename(__file__)])
+with open(CONFIG, 'r') as ff:
+    config = Config(**json.load(ff)[os.path.basename(__file__)])
 
 
 def is_image(fn: str) -> bool:
