@@ -87,6 +87,10 @@ class Writer:
         self.body = ET.SubElement(self.html, 'body')
         # endregion html
 
+    def t2b(self):
+        for f in self.files:
+            ET.SubElement(self.body, 'img', {'alt': f, 'src': f})
+
     def tab(self):
         def get_chapter(fn: str) -> str:
             return fn[:-8]
@@ -135,7 +139,9 @@ class Writer:
 parser = argparse.ArgumentParser(description='generate a gallary viewer with html')
 parser.add_argument('path', type=str, nargs='?', default=os.getcwd(),
                     help='directory path (quoted with double quote)')
-
+parser.add_argument('-m','--mode',type=str,default=config.mode,
+                    help=f'display mode, see {CONFIG} for all available modes')
 args = parser.parse_args()
+
 os.chdir(args.path)
-Writer(config.dest, config.mode).write()
+Writer(config.dest, args.mode).write()
