@@ -83,6 +83,7 @@ class Writer:
                       type='text/css',
                       href=href)
         # endregion head
+        self.body = ET.SubElement(self.html, 'body')
         # endregion html
 
     def tab(self):
@@ -90,10 +91,9 @@ class Writer:
             return fn[:-8]
 
         # region body
-        body = ET.SubElement(self.html, 'body')
 
         # region select
-        select = ET.SubElement(body, 'div', id='select')
+        select = ET.SubElement(self.body, 'div', id='select')
         ET.SubElement(select, 'code', id='inverse').text = 'inverse'
 
         fs = {}
@@ -107,7 +107,7 @@ class Writer:
         # endregion select
 
         # region content
-        content = ET.SubElement(body, 'div', id='content')
+        content = ET.SubElement(self.body, 'div', id='content')
         # foreach chapter
         for chapter, imgs in fs.items():
             chap = ET.SubElement(content, 'p', id=chapter)
