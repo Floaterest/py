@@ -5,50 +5,18 @@
 		"modes": {
 			"tab": {
 				"version": 20210319,
-				"style": {
-					"body": {
-						"background": "black",
-						"margin": 0,
-						"color": "white",
-						"font-size": "6em",
-						"user-select": "none"
-					},
-					"@media screen and (orientation: portrait)": {
-						"body": {
-							"width": "100%"
-						}
-					},
-					"@media screen and (orientation: landscape)": {
-						"body": {
-							"width": "200%"
-						}
-					},
-					"img,p": {
-						"display": "block",
-						"margin": "0 auto"
-					},
-					"#select": {
-						"display": "none",
-						"z-index": 1,
-						"position": "fixed",
-						"top": 0,
-						"left": 0,
-						"height": "100%",
-						"overflow-y": "scroll"
-					},
-					"#select p": {
-						"padding": "10px",
-						"margin": "0 auto"
-					},
-					"#content": {
-						"text-align": "center",
-						"z-index": 0
-					},
-					".off": {
-						"filter": "brightness(30%)"
-					}
-				},
+				"styles": [
+					"t2b.css",
+					"tab.css"
+				],
 				"script": "const content = document.getElementById('content'),\n\tselect = document.getElementById('select');\n\ncontent.addEventListener('click', () => {\n\tif(content.style.filter) content.style.filter = select.style.display = '';\n\telse{\n\t\tcontent.style.filter = 'brightness(10%)';\n\t\tselect.style.display = 'inline';\n\t}\n});\nArray.from(select.getElementsByTagName('p')).forEach(p => p.addEventListener('click', () => {\n\tp.classList.toggle('off');\n\tdocument.getElementById(p.innerText).style.display = p.classList.contains('off') ? 'none' : 'block';\n}));\n\ndocument.getElementById('inverse').addEventListener('click', () => Array.from(select.getElementsByTagName('p')).forEach(p => p.click()));"
+			},
+			"t2b": {
+				"version": 20210320,
+				"styles": [
+					"tab.css"
+				],
+				"script": null
 			}
 		}
 	}
