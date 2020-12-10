@@ -4,6 +4,7 @@
 		"mode": "tab",
 		"modes": {
 			"tab": {
+				"version": 20210319,
 				"style": {
 					"body": {
 						"background": "black",
