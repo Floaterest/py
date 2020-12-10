@@ -1,4 +1,5 @@
 import os, json, argparse
+from typing import List
 from codecs import open
 from dataclasses import dataclass
 import xml.etree.cElementTree as ET
@@ -11,7 +12,7 @@ EXTENSIONS = ['.png', '.jpg', '.gif']
 @dataclass
 class Mode:
     name: str
-    style: dict
+    styles: List[str]
     script: str
     version: int
 
@@ -26,35 +27,18 @@ class Config:
     modes: dict
 
 
-CONFIG = 'config.json'
-with open(CONFIG, 'r') as ff:
-    config = Config(**json.load(ff)[os.path.basename(__file__)])
-
-
 def is_image(fn: str) -> bool:
     return any([fn.endswith(ext) for ext in EXTENSIONS])
+
+
+def read_all_text(fn: str) -> str:
+    with open(fn, 'r', 'utf8') as f:
+        return f.read()
 
 
 def write_all_text(fn: str, s: str):
     with open(fn, 'w', 'utf8') as f:
         f.write(s)
-
-
-def css_to_str(css, ind=0):
-    # if value is an object
-    if isinstance(css, dict):
-        if ind:
-            return '{\n' + '\n'.join([
-                '\t' * ind + k + css_to_str(v, ind + 1)
-                for k, v in css.items()
-            ]) + '\n' + '\t' * (ind - 1) + '}'
-        else:
-            return '\n'.join([
-                k + css_to_str(v, ind + 1)
-                for k, v in css.items()
-            ])
-    else:  # str, int or float
-        return f': {css};'
 
 
 class Writer:
@@ -63,7 +47,7 @@ class Writer:
 
         self.dest = dest
         self.mode = Mode(name=mode, **config.modes[mode])
-        self.files = [f for f in os.listdir() if is_image(f)]
+        self.files = [f for f in os.listdir(os.path.dirname(dest)) if is_image(f)]
 
         assert self.files, os.getcwd() + ' does not contain any images!'
 
@@ -77,12 +61,9 @@ class Writer:
         })
         ET.SubElement(head, 'title').text = os.path.basename(os.getcwd())
 
-        # add style
-        write_all_text(href := f'./{self.dest}.css', css_to_str(self.mode.style))
-        ET.SubElement(head, 'link',
-                      rel='stylesheet',
-                      type='text/css',
-                      href=href)
+        # add styles
+        for style in self.mode.styles:
+            ET.SubElement(head, 'style').text = read_all_text(style)
         # endregion head
         self.body = ET.SubElement(self.html, 'body')
         # endregion html
@@ -123,25 +104,29 @@ class Writer:
         # endregion content
         # endregion body
         # add javascript
-        write_all_text(src := f'./{self.dest}.js', self.mode.script)
+        write_all_text(src := f'{self.dest}.js', self.mode.script)
         ET.SubElement(self.html, 'script',
                       type='application/javascript',
-                      src=src).text = ' '
+                      src=os.path.basename(src)).text = ' '
 
     def write(self):
         exec(f'self.{self.mode.name}()')
         s = ET.tostring(self.html)
+
         with open(self.dest + '.html', 'w', 'utf8') as f:
             f.write(f'<!-- Version {self.mode.version} -->\n')
             f.write(xml.dom.minidom.parseString(s).toprettyxml())
 
 
+CONFIG = 'config.json'
+config = Config(**json.loads(read_all_text(CONFIG))[os.path.basename(__file__)])
+
 parser = argparse.ArgumentParser(description='generate a gallary viewer with html')
 parser.add_argument('path', type=str, nargs='?', default=os.getcwd(),
                     help='directory path (quoted with double quote)')
-parser.add_argument('-m','--mode',type=str,default=config.mode,
+parser.add_argument('-m', '--mode', type=str, default=config.mode,
                     help=f'display mode, see {CONFIG} for all available modes')
 args = parser.parse_args()
 
-os.chdir(args.path)
-Writer(config.dest, args.mode).write()
+print(args.mode)
+Writer(os.path.join(args.path, config.dest), args.mode).write()
