@@ -1,0 +1,27 @@
+
+@media screen and (orientation: portrait){
+	body{'width': '100%'}
+}
+@media screen and (orientation: landscape){
+	body{'width': '200%'}
+}
+#select{
+	display: none;
+	z-index: 1;
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 100%;
+	overflow-y: scroll;
+}
+#select p{
+	padding: 10px;
+	margin: 0 auto;
+}
+#content{
+	text-align: center;
+	z-index: 0;
+}
+.off{
+	filter: brightness(30%);
+}
