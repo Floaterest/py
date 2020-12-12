@@ -13,7 +13,7 @@ EXTENSIONS = ['.png', '.jpg', '.gif']
 class Mode:
     name: str
     styles: List[str]
-    script: str
+    scripts: List[str]
     version: int
 
 
@@ -33,12 +33,7 @@ def is_image(fn: str) -> bool:
 
 def read_all_text(fn: str) -> str:
     with open(fn, 'r', 'utf8') as f:
-        return f.read()
-
-
-def write_all_text(fn: str, s: str):
-    with open(fn, 'w', 'utf8') as f:
-        f.write(s)
+        return '\n' + f.read()
 
 
 class Writer:
@@ -62,8 +57,9 @@ class Writer:
         ET.SubElement(head, 'title').text = os.path.basename(os.getcwd())
 
         # add styles
-        for style in self.mode.styles:
-            ET.SubElement(head, 'style').text = read_all_text(style)
+        for s in self.mode.styles:
+            # looks ugly in the html file, but too lazy to fix it
+            ET.SubElement(head, 'style').text = read_all_text(s)
         # endregion head
         self.body = ET.SubElement(self.html, 'body')
         # endregion html
@@ -104,10 +100,9 @@ class Writer:
         # endregion content
         # endregion body
         # add javascript
-        write_all_text(src := f'{self.dest}.js', self.mode.script)
-        ET.SubElement(self.html, 'script',
-                      type='application/javascript',
-                      src=os.path.basename(src)).text = ' '
+        for s in self.mode.scripts:
+            ET.SubElement(self.html, 'script', type='application/javascript') \
+                .text = read_all_text(s)
 
     def write(self):
         exec(f'self.{self.mode.name}()')
@@ -115,7 +110,9 @@ class Writer:
 
         with open(self.dest + '.html', 'w', 'utf8') as f:
             f.write(f'<!-- Version {self.mode.version} -->\n')
-            f.write(xml.dom.minidom.parseString(s).toprettyxml())
+            s = xml.dom.minidom.parseString(s).toprettyxml()
+            # in <script> minidom thinks '>' should be converted to '&gt;'
+            f.write(s.replace('&gt;', '>'))
 
 
 CONFIG = 'config.json'

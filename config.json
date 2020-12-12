@@ -9,14 +9,17 @@
 					"t2b.css",
 					"tab.css"
 				],
-				"script": "const content = document.getElementById('content'),\n\tselect = document.getElementById('select');\n\ncontent.addEventListener('click', () => {\n\tif(content.style.filter) content.style.filter = select.style.display = '';\n\telse{\n\t\tcontent.style.filter = 'brightness(10%)';\n\t\tselect.style.display = 'inline';\n\t}\n});\nArray.from(select.getElementsByTagName('p')).forEach(p => p.addEventListener('click', () => {\n\tp.classList.toggle('off');\n\tdocument.getElementById(p.innerText).style.display = p.classList.contains('off') ? 'none' : 'block';\n}));\n\ndocument.getElementById('inverse').addEventListener('click', () => Array.from(select.getElementsByTagName('p')).forEach(p => p.click()));"
+				"scripts":[
+					"base.js",
+					"tab.js"
+				]
 			},
 			"t2b": {
 				"version": 20210320,
 				"styles": [
 					"tab.css"
 				],
-				"script": null
+				"scripts": null
 			}
 		}
 	}
