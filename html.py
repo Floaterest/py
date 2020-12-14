@@ -126,5 +126,4 @@ parser.add_argument('-m', '--mode', type=str, default=config.mode,
                     help=f'display mode, see {CONFIG} for all available modes')
 args = parser.parse_args()
 
-print(args.mode)
 Writer(os.path.join(args.path, config.dest), args.mode).write()
