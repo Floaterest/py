@@ -3,7 +3,8 @@ from typing import List
 from codecs import open
 from dataclasses import dataclass
 import xml.etree.cElementTree as ET
-import xml.dom.minidom
+from xml.dom.minidom import parseString
+from xml.sax.saxutils import unescape
 
 # an image is defined as files with these extensions
 EXTENSIONS = ['.png', '.jpg', '.gif']
@@ -110,9 +111,9 @@ class Writer:
 
         with open(self.dest + '.html', 'w', 'utf8') as f:
             f.write(f'<!-- Version {self.mode.version} -->\n')
-            s = xml.dom.minidom.parseString(s).toprettyxml()
+            s = parseString(s).toprettyxml()
             # in <script> minidom thinks '>' should be converted to '&gt;'
-            f.write(s.replace('&gt;', '>'))
+            f.write(unescape(s))
 
 
 CONFIG = 'config.json'
