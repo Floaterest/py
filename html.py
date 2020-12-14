@@ -66,10 +66,16 @@ class Writer:
         # endregion html
 
     def t2b(self):
+        """
+        top to bottom
+        """
         for f in self.files:
             ET.SubElement(self.body, 'img', {'alt': f, 'src': f})
 
     def tab(self):
+        """
+        tabs that can show/hide each chapter
+        """
         def get_chapter(fn: str) -> str:
             return fn[:-8]
 
