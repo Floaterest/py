@@ -17,9 +17,11 @@
 			"t2b": {
 				"version": 20210320,
 				"styles": [
-					"tab.css"
+					"t2b.css"
 				],
-				"scripts": null
+				"scripts": [
+					"base.js"
+				]
 			}
 		}
 	}
