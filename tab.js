@@ -13,14 +13,15 @@ content.addEventListener('click', () => {
 });
 
 // show/hide chapters
-Array.from(select.getElementsByTagName('p'))
-    .forEach(p => p.addEventListener('click', () => {
+Array.from(select.getElementsByTagName('p')).forEach(
+    p => p.addEventListener('click', () => {
         p.classList.toggle('off');
         document.getElementById(p.innerText)
             .style.display = p.classList.contains('off') ? 'none' : 'block';
-    }));
+    })
+);
 
 // click all the selections
-document.getElementById('inverse').addEventListener('click', () =>
-    Array.from(select.getElementsByTagName('p')).forEach(p => p.click())
+document.getElementById('inverse').addEventListener('click',
+    () => Array.from(select.getElementsByTagName('p')).forEach(p => p.click())
 );
