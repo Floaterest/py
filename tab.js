@@ -4,12 +4,12 @@ const select = document.getElementById('select');
 
 // show/hide selection menu
 content.addEventListener('click', () => {
-	if(content.style.filter){
-	    content.style.filter = select.style.display = '';
-	}else{
-		content.style.filter = 'brightness(10%)';
-		select.style.display = 'inline';
-	}
+    if(content.style.filter){
+        content.style.filter = select.style.display = '';
+    }else{
+        content.style.filter = 'brightness(10%)';
+        select.style.display = 'inline';
+    }
 });
 
 // show/hide chapters
