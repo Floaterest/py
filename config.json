@@ -18,7 +18,9 @@
 				"styles": [
 					"t2b.css"
 				],
-				"scripts": []
+				"scripts": [
+					"t2b.js"
+				]
 			}
 		}
 	}
