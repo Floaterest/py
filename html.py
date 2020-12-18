@@ -69,13 +69,16 @@ class Writer:
         """
         top to bottom
         """
+        # region body
         for f in self.files:
             ET.SubElement(self.body, 'img', {'alt': f, 'src': f})
+        # endregion body
 
     def tab(self):
         """
         tabs that can show/hide each chapter
         """
+
         def get_chapter(fn: str) -> str:
             return fn[:-8]
 
@@ -106,15 +109,15 @@ class Writer:
 
         # endregion content
         # endregion body
-        # add javascript
+
+    def write(self):
+        exec(f'self.{self.mode.name}()')
+        # add script
         for s in self.mode.scripts:
             ET.SubElement(self.html, 'script', type='application/javascript') \
                 .text = read_all_text(s)
 
-    def write(self):
-        exec(f'self.{self.mode.name}()')
         s = ET.tostring(self.html)
-
         with open(self.dest + '.html', 'w', 'utf8') as f:
             f.write(f'<!-- Version {self.mode.version} -->\n')
             s = parseString(s).toprettyxml()
