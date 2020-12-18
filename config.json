@@ -1,6 +1,6 @@
 {
 	"html.py": {
-		"dest": "0",
+		"dest": "!",
 		"mode": "tab",
 		"modes": {
 			"tab": {
