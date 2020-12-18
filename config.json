@@ -9,8 +9,7 @@
 					"t2b.css",
 					"tab.css"
 				],
-				"scripts":[
-					"base.js",
+				"scripts": [
 					"tab.js"
 				]
 			},
@@ -19,9 +18,7 @@
 				"styles": [
 					"t2b.css"
 				],
-				"scripts": [
-					"base.js"
-				]
+				"scripts": []
 			}
 		}
 	}
