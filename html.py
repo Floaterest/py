@@ -55,7 +55,7 @@ class Writer:
             'content': 'text/html;charset=utf-8',
             'http-equiv': 'Content-Type',
         })
-        ET.SubElement(head, 'title').text = os.path.basename(os.getcwd())
+        ET.SubElement(head, 'title').text = os.path.basename(os.path.dirname(dest))
 
         # add styles
         for s in self.mode.styles:
@@ -135,4 +135,9 @@ parser.add_argument('-m', '--mode', type=str, default=config.mode,
                     help=f'display mode, see {CONFIG} for all available modes')
 args = parser.parse_args()
 
-Writer(os.path.join(args.path, config.dest), args.mode).write()
+for r, ds, _ in os.walk(args.path):
+    for d in ds:
+        d = os.path.join(r,d)
+        print(d, args.mode)
+        f = os.path.join(d,config.dest)
+        Writer(f, args.mode).write()
