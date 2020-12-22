@@ -1,4 +1,14 @@
-/* version 20210320 */
+/* version 20210415 */
+@media screen and (orientation: portrait){
+	body{
+		width: 100%;
+	}
+}
+@media screen and (orientation: landscape){
+	body{
+		width: 200%;
+	}
+}
 body{
 	background: black;
 	margin: 0;
