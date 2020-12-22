@@ -41,11 +41,12 @@ class Writer:
     def __init__(self, dest: str, mode: str):
         assert mode in config.modes, f"'{mode}' is not a valid mode!"
 
+        folder = os.path.dirname(dest)
         self.dest = dest
         self.mode = Mode(name=mode, **config.modes[mode])
         self.files = [f for f in os.listdir(os.path.dirname(dest)) if is_image(f)]
 
-        assert self.files, os.getcwd() + ' does not contain any images!'
+        assert self.files, folder + ' does not contain any images!'
 
         # region html
         self.html = ET.Element('html')
