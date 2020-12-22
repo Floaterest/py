@@ -44,7 +44,7 @@ class Writer:
         folder = os.path.dirname(dest)
         self.dest = dest
         self.mode = Mode(name=mode, **config.modes[mode])
-        self.files = [f for f in os.listdir(os.path.dirname(dest)) if is_image(f)]
+        self.files = [f for f in os.listdir(os.path.dirname(dest)) if is_image(f.lower())]
 
         assert self.files, folder + ' does not contain any images!'
 
