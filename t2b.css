@@ -16,7 +16,7 @@ body{
 	font-size: 6em;
 	user-select: none;
 }
-img,p{
+img{
 	display: block;
 	margin: 0 auto;
     text-align: center;
