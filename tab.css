@@ -1,14 +1,4 @@
-/* version 20210320 */
-@media screen and (orientation: portrait){
-	body{
-		width: 100%;
-	}
-}
-@media screen and (orientation: landscape){
-	body{
-		width: 200%;
-	}
-}
+/* version 20210415 */
 #select{
 	display: none;
 	z-index: 1;
