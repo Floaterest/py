@@ -75,6 +75,22 @@ class Writer:
             ET.SubElement(self.body, 'img', {'alt': f, 'src': f})
         # endregion body
 
+    def t2b2(self):
+        """
+        top to bottom but odd pages are at left and even pages are at right
+        (like a normal manga)
+        """
+        # same thing as t2b but image display is inline instead of block
+        # and add <br> after each 2 images
+
+        # region body
+
+        for i, f in enumerate(self.files):
+            ET.SubElement(self.body, 'img', {'alt': f, 'src': f})
+            if not i % 2:
+                ET.SubElement(self.body, 'br')
+        # endregion body
+
     def tab(self):
         """
         tabs that can show/hide each chapter

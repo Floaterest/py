@@ -19,6 +19,11 @@
 					"t2b.css"
 				],
 				"scripts": []
+			},
+			"t2b2": {
+				"version": 20200415,
+				"styles": ["t2b2.css"],
+				"scripts": []
 			}
 		}
 	}
