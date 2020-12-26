@@ -8,6 +8,7 @@ from xml.sax.saxutils import unescape
 
 # an image is defined as files with these extensions
 EXTENSIONS = ['.png', '.jpg', '.gif']
+path = os.path
 
 
 @dataclass
@@ -33,20 +34,18 @@ def is_image(fn: str) -> bool:
 
 
 def read_all_text(fn: str) -> str:
+    # make sure the file is the original cwd
+    fn = path.join(path.dirname(__file__), path.basename(fn))
     with open(fn, 'r', 'utf8') as f:
         return '\n' + f.read()
 
 
 class Writer:
-    def __init__(self, dest: str, mode: str):
-        assert mode in config.modes, f"'{mode}' is not a valid mode!"
+    def __init__(self, title: str, files: List[str], dest: str, mode: str):
 
-        folder = os.path.dirname(dest)
+        self.files = files
         self.dest = dest
         self.mode = Mode(name=mode, **config.modes[mode])
-        self.files = [f for f in os.listdir(os.path.dirname(dest)) if is_image(f.lower())]
-
-        assert self.files, folder + ' does not contain any images!'
 
         # region html
         self.html = ET.Element('html')
@@ -56,7 +55,8 @@ class Writer:
             'content': 'text/html;charset=utf-8',
             'http-equiv': 'Content-Type',
         })
-        ET.SubElement(head, 'title').text = os.path.basename(os.path.dirname(dest))
+
+        ET.SubElement(head, 'title').text = title
 
         # add styles
         for s in self.mode.styles:
@@ -143,7 +143,7 @@ class Writer:
 
 
 CONFIG = 'config.json'
-config = Config(**json.loads(read_all_text(CONFIG))[os.path.basename(__file__)])
+config = Config(**json.loads(read_all_text(CONFIG))[path.basename(__file__)])
 
 parser = argparse.ArgumentParser(description='generate a gallary viewer with html')
 parser.add_argument('path', type=str, nargs='?', default=os.getcwd(),
@@ -151,10 +151,15 @@ parser.add_argument('path', type=str, nargs='?', default=os.getcwd(),
 parser.add_argument('-m', '--mode', type=str, default=config.mode,
                     help=f'display mode, see {CONFIG} for all available modes')
 args = parser.parse_args()
+assert args.mode in config.modes, f"'{args.mode}' is not a valid mode!"
 
-for r, ds, _ in os.walk(args.path):
-    for d in ds:
-        d = os.path.join(r,d)
-        print(d, args.mode)
-        f = os.path.join(d,config.dest)
-        Writer(f, args.mode).write()
+RED = '\033[1;31m'
+RESET = '\033[0;0m'
+
+for r, ds, fs in os.walk(args.path):
+    if fs := [f for f in fs if is_image(f.lower())]:
+        print(r,args.mode)
+        os.chdir(r)
+        Writer(path.basename(r), fs, config.dest, args.mode).write()
+    else:
+        print(f'{RED}no images in "{r}"{RESET}')
