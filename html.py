@@ -8,6 +8,10 @@ from xml.sax.saxutils import unescape
 
 # an image is defined as files with these extensions
 EXTENSIONS = ['.png', '.jpg', '.gif']
+RED = '\033[1;31m'
+RESET = '\033[0;0m'
+CONFIG = 'config.json'
+
 path = os.path
 
 
@@ -75,7 +79,7 @@ class Writer:
             ET.SubElement(self.body, 'img', {'alt': f, 'src': f})
         # endregion body
 
-    def t2b2(self):
+    def t2b0(self):
         """
         top to bottom but odd pages are at left and even pages are at right
         (like a normal manga)
@@ -88,6 +92,22 @@ class Writer:
         for i, f in enumerate(self.files):
             ET.SubElement(self.body, 'img', {'alt': f, 'src': f})
             if not i % 2:
+                ET.SubElement(self.body, 'br')
+        # endregion body
+
+    def t2b1(self):
+        """
+        top to bottom but odd pages are at left and even pages are at right
+        (like a normal manga)
+        """
+        # same thing as t2b but image display is inline instead of block
+        # and add <br> after each 2 images
+
+        # region body
+
+        for i, f in enumerate(self.files):
+            ET.SubElement(self.body, 'img', {'alt': f, 'src': f})
+            if i % 2:
                 ET.SubElement(self.body, 'br')
         # endregion body
 
@@ -117,12 +137,16 @@ class Writer:
         # region content
         content = ET.SubElement(self.body, 'div', id='content')
         # foreach chapter
+        c = 0
         for chapter, imgs in fs.items():
             chap = ET.SubElement(content, 'p', id=chapter)
             chap.text = chapter
             # foreach image
             for i in imgs:
                 ET.SubElement(chap, 'img', {'alt': i, 'src': i})
+                if not c % 2:
+                    ET.SubElement(chap, 'br')
+                c += 1
 
         # endregion content
         # endregion body
@@ -142,24 +166,27 @@ class Writer:
             f.write(unescape(s))
 
 
-CONFIG = 'config.json'
-config = Config(**json.loads(read_all_text(CONFIG))[path.basename(__file__)])
+def main():
+    config = Config(**json.loads(read_all_text(CONFIG))[path.basename(__file__)])
 
-parser = argparse.ArgumentParser(description='generate a gallary viewer with html')
-parser.add_argument('path', type=str, nargs='?', default=os.getcwd(),
-                    help='directory path (quoted with double quote)')
-parser.add_argument('-m', '--mode', type=str, default=config.mode,
-                    help=f'display mode, see {CONFIG} for all available modes')
-args = parser.parse_args()
-assert args.mode in config.modes, f"'{args.mode}' is not a valid mode!"
+    parser = argparse.ArgumentParser(description='generate a gallary viewer with html')
+    parser.add_argument('path', type=str, nargs='?', default=os.getcwd(),
+                        help='directory path (quoted with double quote)')
+    parser.add_argument('-m', '--mode', type=str, default=config.mode,
+                        help=f'display mode, see {CONFIG} for all available modes')
+    args = parser.parse_args()
+    assert args.mode in config.modes, f"'{args.mode}' is not a valid mode!"
+    assert path.exists(args.path), f"'{args.path}' is not a valid path!"
 
-RED = '\033[1;31m'
-RESET = '\033[0;0m'
+    for r, ds, fs in os.walk(args.path):
+        if fs := [f for f in fs if is_image(f.lower())]:
+            print(r, args.mode)
+            fs.sort()
+            os.chdir(r)
+            Writer(path.basename(r), fs, config.dest, args.mode).write()
+        else:
+            print(f'{RED}no images in "{r}"{RESET}')
 
-for r, ds, fs in os.walk(args.path):
-    if fs := [f for f in fs if is_image(f.lower())]:
-        print(r,args.mode)
-        os.chdir(r)
-        Writer(path.basename(r), fs, config.dest, args.mode).write()
-    else:
-        print(f'{RED}no images in "{r}"{RESET}')
+
+if __name__ == '__main__':
+    main()
