@@ -20,9 +20,14 @@
 				],
 				"scripts": []
 			},
-			"t2b2": {
+			"t2b0": {
 				"version": 20200415,
-				"styles": ["t2b2.css"],
+				"styles": ["t2b0.css"],
+				"scripts": []
+			},
+			"t2b1": {
+				"version": 20200507,
+				"styles": ["t2b0.css"],
 				"scripts": []
 			}
 		}
