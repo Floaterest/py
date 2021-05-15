@@ -26,7 +26,7 @@ class E:
         for attr, value in self.attr.items():
             s += f' {attr}="{value}"'
         if self.tag in VOID:
-            return s + '/>\n'
+            return s + '>\n'
         elif not len(self.children) and '\n' not in self.text:
             # if no children and text is at most 1 line
             return s + '>' + self.text + '</' + self.tag + '>\n'
