@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 
 EXT = ['.png', '.jpg', '.gif']
 VOID = ['meta', 'img']
-NOINDENT = ['head', 'body']
+NO_INDENT = ['head', 'body']
 RED = '\033[1;31m'
 RESET = '\033[0;0m'
 path = os.path
@@ -36,7 +36,7 @@ class E:
                 s += '\t' + self.text + '\n'
             # children
             for ch in self.children:
-                if ch.tag not in NOINDENT:
+                if ch.tag not in NO_INDENT:
                     s += '\t'
                 s += ch.str()
             return s + '</' + self.tag + '>\n'
