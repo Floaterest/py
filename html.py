@@ -41,12 +41,19 @@ class E:
                 s += ch.str()
             return s + '</' + self.tag + '>\n'
 
+    def find(self, tag: str):
+        for ch in self.children:
+            if ch.tag == tag:
+                return ch
+        return None
+
 
 e = E('html', attr={'lang': 'en'}, children=[
-    E('head', attr={'content': 'text/html;charset=utf-8'}, children=[
-        E('title', text='py')
+    E('head', children=[
+        E('meta', attr={'charset': 'utf8'}),
+        E('title', text='py'),
     ]),
-
+    E('body'),
 ])
 
 with open('t.html', 'w', 'utf8') as f:
