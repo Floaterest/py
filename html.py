@@ -11,7 +11,15 @@ VOID = ['meta', 'img']
 NO_INDENT = ['head', 'body']
 RED = '\033[1;31m'
 RESET = '\033[0;0m'
-path = os.path
+
+
+def is_image(fn: str) -> bool:
+    return any([fn.endswith(ext) for ext in EXTENSIONS])
+
+
+def get_src(fn: str):
+    with open(path.join(SRC, fn), 'r', 'utf8') as f:
+        return f.readlines()
 
 
 @dataclass
