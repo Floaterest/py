@@ -87,13 +87,14 @@ def init_html(title: str):
 
 
 class Writer:
-    def __init__(self, modename: str, mode: Mode, wrap: int):
+    def __init__(self, mode: str, wrap: int):
         """
         do os.chdir() before init
         """
         self.html, self.head, self.body = init_html(path.basename(os.getcwd()))
         self.files = sorted([f for f in os.listdir() if is_image(f.lower())])
         self.wrap = wrap
+        self.mode = mode
 
     def tab(self):
         def get_chapter(fn: str) -> str:
@@ -135,6 +136,7 @@ class Writer:
         # endregion body
 
     def write(self, fn: str):
+        self.__getattribute__(self.mode)()
         with open(fn + '.html', 'w', 'utf8') as f:
             f.write('<!doctype html>\n')
             f.write(self.html.str())
