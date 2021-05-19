@@ -121,7 +121,7 @@ class Writer:
         # foreach chapter
         page = 1
         for chapter, files in fs.items():
-            chap = E('p', attr={'id': chapter}, text=[chapter]).append_to(content)
+            chap = E('p', attr={'id': chapter}, text=[chapter + '\n']).append_to(content)
             # foreach image
             for f in files:
                 chap.append(E('img', attr={'alt': f, 'src': f}))
