@@ -73,9 +73,7 @@ def get_src(fn: str):
 
 
 def init_html(title: str):
-    html = E('html', attr={'lang': 'en'}, children=[
-        E('body'),
-    ])
+    html = E('html', attr={'lang': 'en'})
     return [
         html,
         E('head', children=[
