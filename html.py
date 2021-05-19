@@ -19,9 +19,10 @@ class E:
     text: list[str] = field(default_factory=list)
     children: list[E] = field(default_factory=list)
 
-    def str(self) -> str:
+    def str(self, indent=0) -> str:
+        t = '\t' * indent
         # start tag
-        s = '<' + self.tag
+        s = t + '<' + self.tag
         # add attributes
         for attr, value in self.attr.items():
             s += f' {attr}="{value}"'
@@ -31,16 +32,18 @@ class E:
             # if no children and text is at most 1 line
             return s + '>' + ''.join(self.text) + '</' + self.tag + '>\n'
         else:
+            tt = t + '\t'
             s += '>\n'
             # text
             for line in self.text:
-                s += '\t' + line
+                s += tt + line
             # children
             for ch in self.children:
-                if ch.tag not in NO_INDENT:
-                    s += '\t'
-                s += ch.str()
-            return s + '</' + self.tag + '>\n'
+                if ch.tag in NO_INDENT:
+                    s += ch.str(indent)
+                else:
+                    s += ch.str(indent + 1)
+            return s + t + '</' + self.tag + '>\n'
 
     def append(self, element: E):
         self.children.append(element)
