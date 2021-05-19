@@ -125,7 +125,7 @@ class Writer:
             # foreach image
             for f in files:
                 chap.append(E('img', attr={'alt': f, 'src': f}))
-                if not (self.wrap or (self.wrap + page) % 2):
+                if not (self.wrap and (self.wrap + page) % 2):
                     """
                     add <br> if
                         1. wrap == 0
