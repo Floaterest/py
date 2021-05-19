@@ -1,5 +1,5 @@
 from __future__ import annotations
-import os
+import os, sys
 from codecs import open
 from dataclasses import dataclass, field
 
@@ -141,3 +141,8 @@ class Writer:
         with open(fn + '.html', 'w', 'utf8') as f:
             f.write('<!doctype html>\n')
             f.write(self.html.str())
+
+
+os.chdir(sys.argv[1])
+w = Writer('tab', 2)
+w.write('0')
