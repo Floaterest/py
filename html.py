@@ -54,15 +54,8 @@ class E:
         return self
 
 
-@dataclass
-class Mode:
-    version: int
-    css: list[str] = field(default_factory=list)
-    js: list[str] = field(default_factory=list)
-
-
 MODES = {
-    'tab': Mode(20210319),
+    'tab': [20210319, [], []],
 }
 
 
@@ -95,7 +88,8 @@ class Writer:
         self.html, self.head, self.body = init_html(path.basename(os.getcwd()))
         self.files = sorted([f for f in os.listdir() if is_image(f.lower())])
         self.wrap = wrap
-        self.mode = mode
+        self.generate = self.__getattribute__(mode)
+        self.version, css, js = MODES[mode]
 
     def tab(self):
         def get_chapter(fn: str) -> str:
@@ -137,9 +131,10 @@ class Writer:
         # endregion body
 
     def write(self, fn: str):
-        self.__getattribute__(self.mode)()
+        self.generate()
         with open(fn + '.html', 'w', 'utf8') as f:
             f.write('<!doctype html>\n')
+            f.write(f'<!-- Version {self.version} -->')
             f.write(self.html.str())
 
 
