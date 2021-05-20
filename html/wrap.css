@@ -1,24 +1,13 @@
-/* version 20210415 */
-@media screen and (orientation: portrait){
-	body{
-		width: 100%;
-	}
-}
-@media screen and (orientation: landscape){
-	body{
-		width: 200%;
-	}
-}
+/* wrap.css version 20210415 */
 body{
     direction:rtl;
     white-space: nowrap;
-	background: #39c5bb;
-	margin: 0;
     color: white;
     /* remove whitespace in between images */
     /* https://stackoverflow.com/a/5647640 */
     font-size: 0;
 }
+
 img{
 	margin: 10px auto;
 }
