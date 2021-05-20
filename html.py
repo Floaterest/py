@@ -70,14 +70,14 @@ def get_src(fn: str):
 
 def init_html(title: str):
     html = E('html', attr={'lang': 'en'})
-    return [
+    return (
         html,
         E('head', children=[
             E('meta', attr={'charset': 'utf8'}),
             E('title', text=[title]),
         ]).append_to(html),
         E('body').append_to(html)
-    ]
+    )
 
 
 class Writer:
