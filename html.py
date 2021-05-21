@@ -7,7 +7,7 @@ path = os.path
 EXTENSIONS = ['.png', '.jpg', '.gif']
 SRC = path.abspath('html/')
 VOID = ['meta', 'img', 'br']
-NO_INDENT = ['head', 'body']
+NO_INDENT = ['html']
 RED = '\033[1;31m'
 RESET = '\033[0;0m'
 
@@ -38,11 +38,10 @@ class E:
             for line in self.text:
                 s += tt + line
             # children
+            if self.tag not in NO_INDENT:
+                indent += 1
             for ch in self.children:
-                if ch.tag in NO_INDENT:
-                    s += ch.str(indent)
-                else:
-                    s += ch.str(indent + 1)
+                s += ch.str(indent)
             return s + t + '</' + self.tag + '>\n'
 
     def append(self, element: E):
@@ -90,7 +89,12 @@ class Writer:
         self.files = sorted([f for f in os.listdir() if is_image(f.lower())])
         self.wrap = wrap
         self.generate = self.__getattribute__(mode)
-        self.version, css, js = MODES[mode]
+        self.version, styles, scripts = MODES[mode]
+        # add styles and scripts
+        for style in styles:
+            self.head.append(E('style', text=get_src(style)))
+        for script in scripts:
+            self.html.append(E('script', text=get_src(script)))
 
     def tab(self):
         def get_chapter(fn: str) -> str:
