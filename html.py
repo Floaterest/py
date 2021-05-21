@@ -139,7 +139,7 @@ class Writer:
         self.generate()
         with open(fn + '.html', 'w', 'utf8') as f:
             f.write('<!doctype html>\n')
-            f.write(f'<!-- Version {self.version} -->')
+            f.write(f'<!-- Version {self.version} -->\n')
             f.write(self.html.str())
 
 
