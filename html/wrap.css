@@ -2,7 +2,6 @@
 body{
     direction:rtl;
     white-space: nowrap;
-    color: white;
     /* remove whitespace in between images */
     /* https://stackoverflow.com/a/5647640 */
     font-size: 0;
