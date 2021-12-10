@@ -93,6 +93,7 @@ class Writer:
         # add styles and scripts
         for style in styles:
             self.head.append(E('style', text=get_src(style)))
+        self.head.append(E('style', text=get_src('wrap.css' if wrap else 'wrap0.css')))
         for script in scripts:
             self.html.append(E('script', text=get_src(script)))
 
