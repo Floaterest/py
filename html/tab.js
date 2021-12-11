@@ -22,6 +22,6 @@ Array.from(select.getElementsByTagName('p')).forEach(
 );
 
 // click all the selections
-document.getElementById('inverse').addEventListener('click',
+document.getElementById('invert').addEventListener('click',
     () => Array.from(select.getElementsByTagName('p')).forEach(p => p.click())
 );
