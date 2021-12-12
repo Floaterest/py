@@ -1,5 +1,6 @@
 /* tab.css version 20210415 */
 #select{
+    font-size: 8em;
 	display: none;
 	position: fixed;
 	top: 0;
