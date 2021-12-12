@@ -145,5 +145,5 @@ class Writer:
 
 
 os.chdir(sys.argv[1])
-w = Writer('tab', 2)
+w = Writer('tab', 1)
 w.write('0')
