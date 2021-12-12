@@ -2,11 +2,14 @@
 body{
     direction:rtl;
     white-space: nowrap;
-    /* remove whitespace in between images */
-    /* https://stackoverflow.com/a/5647640 */
-    font-size: 0;
 }
 
 img{
 	margin: 10px auto;
+}
+
+#content{
+    /* remove whitespace in between images */
+    /* https://stackoverflow.com/a/5647640 */
+    font-size: 0;
 }
