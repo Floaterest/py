@@ -18,19 +18,22 @@ class E:
     attr: dict = field(default_factory=dict)
     text: list[str] = field(default_factory=list)
     children: list[E] = field(default_factory=list)
+    # whether appends '\n' at end of closed tag
+    eol: bool = True
 
     def str(self, indent=0) -> str:
         t = '\t' * indent
+        n = '\n' * self.eol
         # start tag
         s = t + '<' + self.tag
         # add attributes
         for attr, value in self.attr.items():
             s += f' {attr}="{value}"'
         if self.tag in VOID:
-            return s + '>\n'
+            return s + '>' + n
         elif not len(self.children) and len(self.text) < 2:
             # if no children and text is at most 1 line
-            return s + '>' + ''.join(self.text) + '</' + self.tag + '>\n'
+            return s + '>' + ''.join(self.text) + '</' + self.tag + '>' + n
         else:
             tt = t + '\t'
             s += '>\n'
@@ -42,7 +45,7 @@ class E:
                 indent += 1
             for ch in self.children:
                 s += ch.str(indent)
-            return s + t + '</' + self.tag + '>\n'
+            return s + t + '</' + self.tag + '>' + n
 
     def append(self, element: E):
         self.children.append(element)
