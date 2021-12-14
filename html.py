@@ -121,21 +121,22 @@ class Writer:
 
         # region content
         content = E('div', attr={'id': 'content'}).append_to(self.body)
-        # foreach chapter
-        page = 1
+
+        # if wrap at page 2n (wrap==2), shift = 1
+        # if wrap at page 1+2n (wrap==1), shift = -1
+        shift = 2 * self.wrap - 3
         for chapter, files in fs.items():
             chap = E('p', attr={'id': chapter}, text=[chapter + '\n']).append_to(content)
+            # upper bound of the list
+            upper = len(files) - 1
             # foreach image
-            for f in files:
-                chap.append(E('img', attr={'alt': f, 'src': f}))
-                if not (self.wrap and (self.wrap + page) % 2):
-                    """
-                    add <br> if
-                        1. wrap == 0
-                        2. wrap and page number(1-indexed) are both odd or even 
-                    """
-                    chap.append(E('br'))
-                page = (page + 1) % 2
+            for i in range(len(files)):
+                # last index or if wrap and i are both even or both odd
+                eol = i == upper or not (self.wrap + i) % 2
+                i = max(min(i + shift, upper), 0)
+                chap.append(E('img', attr={'alt': files[i], 'src': files[i]}, eol=eol))
+                shift = -shift
+
         # endregion content
         # endregion body
 
