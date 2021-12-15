@@ -151,5 +151,7 @@ class Writer:
 
 
 os.chdir(sys.argv[1])
+# note: wrapping is based on global page number
+# not page number inside each chapter
 w = Writer('tab', 1)
 w.write('0')
