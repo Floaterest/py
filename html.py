@@ -126,17 +126,19 @@ class Writer:
         # if wrap at page 2n (wrap==2), shift = 1
         # if wrap at page 2n+1 (wrap==1), shift = -1
         shift = 2 * self.wrap - 3
+        page = 1
         for chapter, files in fs.items():
             chap = Element('p', attr={'id': chapter}, text=[chapter + '\n']).append_to(content)
             # upper bound of the list
             upper = len(files) - 1
             # foreach image
             for i in range(len(files)):
-                # last index or if wrap and i are both even or both odd
-                eol = i == upper or not (self.wrap + i) % 2
+                # last index or if *wrap* and *page number(1-indexed)* are both even or both odd
+                eol = i == upper or not (self.wrap + page) % 2
                 i = max(min(i + shift, upper), 0)
                 chap.append(Element('img', attr={'alt': files[i], 'src': files[i]}, eol=eol))
                 shift = -shift
+                page += 1
 
         # endregion content
         # endregion body
