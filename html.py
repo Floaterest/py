@@ -7,7 +7,6 @@ path = os.path
 EXTENSIONS = ['.png', '.jpg', '.gif']
 SRC = path.abspath('html/')
 VOID = ['meta', 'img', 'br']
-NO_INDENT = ['html']
 RED = '\033[1;31m'
 RESET = '\033[0;0m'
 
@@ -20,8 +19,12 @@ class Element:
     children: list[Element] = field(default_factory=list)
     # whether appends '\n' at end of closed tag
     eol: bool = True
+    # whether itself should be indented in the final html
+    indent: bool = True
 
     def str(self, indent=0) -> str:
+        # no indent if not self.indent
+        indent *= self.indent
         t = '\t' * indent
         n = '\n' * self.eol
         # start tag
@@ -41,10 +44,8 @@ class Element:
             for line in self.text:
                 s += tt + line
             # children
-            if self.tag not in NO_INDENT:
-                indent += 1
             for ch in self.children:
-                s += ch.str(indent)
+                s += ch.str(indent + 1)
             return s + t + '</' + self.tag + '>' + n
 
     def append(self, element: Element):
@@ -75,11 +76,11 @@ def init_html(title: str):
     html = Element('html', attr={'lang': 'en'})
     return (
         html,
-        Element('head', children=[
+        Element('head', indent=False, children=[
             Element('meta', attr={'charset': 'utf8'}),
             Element('title', text=[title]),
         ]).append_to(html),
-        Element('body').append_to(html)
+        Element('body', indent=False).append_to(html)
     )
 
 
@@ -98,7 +99,7 @@ class Writer:
             self.head.append(Element('style', text=get_src(style)))
         self.head.append(Element('style', text=get_src('wrap.css' if wrap else 'wrap0.css')))
         for script in scripts:
-            self.html.append(Element('script', text=get_src(script)))
+            self.html.append(Element('script', indent=False, text=get_src(script)))
 
     def tab(self):
         def get_chapter(fn: str) -> str:
