@@ -57,8 +57,8 @@ class E:
 
 
 MODES = {
-    't2b': [20200415, ['t2b.css'], []],
-    'tab': [20210319, ['t2b.css', 'tab.css'], ['tab.js']],
+    't2b': [['t2b.css'], []],
+    'tab': [['t2b.css', 'tab.css'], ['tab.js']],
 }
 
 
@@ -92,7 +92,7 @@ class Writer:
         self.files = sorted([f for f in os.listdir() if is_image(f.lower())])
         self.wrap = wrap
         self.generate = self.__getattribute__(mode)
-        self.version, styles, scripts = MODES[mode]
+        styles, scripts = MODES[mode]
         # add styles and scripts
         for style in styles:
             self.head.append(E('style', text=get_src(style)))
@@ -144,7 +144,6 @@ class Writer:
         self.generate()
         with open(fn + '.html', 'w', 'utf8') as f:
             f.write('<!doctype html>\n')
-            f.write(f'<!-- Version {self.version} -->\n')
             f.write(self.html.str())
 
 
