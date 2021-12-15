@@ -122,10 +122,10 @@ class Writer:
 
         # region content
         content = Element('div', attr={'id': 'content'}).append_to(self.body)
-
-        # if wrap at page 2n (wrap==2), shift = 1
-        # if wrap at page 2n+1 (wrap==1), shift = -1
-        shift = 2 * self.wrap - 3
+        # if wrap == 0, then shift = 0
+        # elif wrap at page 2n (wrap==2), then shift = 1
+        # elif wrap at page 2n+1 (wrap==1), then shift = -1
+        shift = not self.wrap or 2 * self.wrap - 3
         page = 1
         for chapter, files in fs.items():
             chap = Element('p', attr={'id': chapter}, text=[chapter + '\n']).append_to(content)
@@ -135,9 +135,10 @@ class Writer:
             for i in range(len(files)):
                 # if wrap and page number(1-indexed) are both even or both odd
                 both = not (self.wrap + page) % 2
-                # always eol at last element and indent at first element
-                eol = not both or i == upper
-                indent = both or not i
+                # always eol and indent if self.wrap == 0
+                # and always eol at last element and indent at first element
+                eol = not self.wrap or not both or i == upper
+                indent = not self.wrap or both or not i
                 # make sure i is in list's range
                 i = max(min(i + shift, upper), 0)
                 chap.append(Element('img', attr={
