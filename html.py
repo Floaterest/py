@@ -133,10 +133,17 @@ class Writer:
             upper = len(files) - 1
             # foreach image
             for i in range(len(files)):
-                # last index or if *wrap* and *page number(1-indexed)* are both even or both odd
-                eol = i == upper or not (self.wrap + page) % 2
+                # if wrap and page number(1-indexed) are both even or both odd
+                both = not (self.wrap + page) % 2
+                # always eol at last element and indent at first element
+                eol = not both or i == upper
+                indent = both or not i
+                # make sure i is in list's range
                 i = max(min(i + shift, upper), 0)
-                chap.append(Element('img', attr={'alt': files[i], 'src': files[i]}, eol=eol))
+                chap.append(Element('img', attr={
+                    'alt': files[i], 'src': files[i]
+                }, eol=eol, indent=indent))
+
                 shift = -shift
                 page += 1
 
