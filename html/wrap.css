@@ -1,7 +1,6 @@
 /* wrap.css */
 body{
-    direction:rtl;
-    white-space: nowrap;
+    white-space: pre-line;
 }
 
 img{
