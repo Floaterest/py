@@ -13,11 +13,11 @@ RESET = '\033[0;0m'
 
 
 @dataclass
-class E:
+class Element:
     tag: str
     attr: dict = field(default_factory=dict)
     text: list[str] = field(default_factory=list)
-    children: list[E] = field(default_factory=list)
+    children: list[Element] = field(default_factory=list)
     # whether appends '\n' at end of closed tag
     eol: bool = True
 
@@ -47,11 +47,11 @@ class E:
                 s += ch.str(indent)
             return s + t + '</' + self.tag + '>' + n
 
-    def append(self, element: E):
+    def append(self, element: Element):
         self.children.append(element)
         return self
 
-    def append_to(self, element: E):
+    def append_to(self, element: Element):
         element.children.append(self)
         return self
 
@@ -72,14 +72,14 @@ def get_src(fn: str):
 
 
 def init_html(title: str):
-    html = E('html', attr={'lang': 'en'})
+    html = Element('html', attr={'lang': 'en'})
     return (
         html,
-        E('head', children=[
-            E('meta', attr={'charset': 'utf8'}),
-            E('title', text=[title]),
+        Element('head', children=[
+            Element('meta', attr={'charset': 'utf8'}),
+            Element('title', text=[title]),
         ]).append_to(html),
-        E('body').append_to(html)
+        Element('body').append_to(html)
     )
 
 
@@ -95,10 +95,10 @@ class Writer:
         styles, scripts = MODES[mode]
         # add styles and scripts
         for style in styles:
-            self.head.append(E('style', text=get_src(style)))
-        self.head.append(E('style', text=get_src('wrap.css' if wrap else 'wrap0.css')))
+            self.head.append(Element('style', text=get_src(style)))
+        self.head.append(Element('style', text=get_src('wrap.css' if wrap else 'wrap0.css')))
         for script in scripts:
-            self.html.append(E('script', text=get_src(script)))
+            self.html.append(Element('script', text=get_src(script)))
 
     def tab(self):
         def get_chapter(fn: str) -> str:
@@ -106,8 +106,8 @@ class Writer:
 
         # region body
         # region select
-        select = E('div', attr={'id': 'select'}, children=[
-            E('code', attr={'id': 'invert'}, text=['invert'])
+        select = Element('div', attr={'id': 'select'}, children=[
+            Element('code', attr={'id': 'invert'}, text=['invert'])
         ]).append_to(self.body)
 
         fs = {}
@@ -115,18 +115,18 @@ class Writer:
             chap = get_chapter(f)
             if chap not in fs:
                 fs[chap] = []
-                select.append(E('p', text=[chap]))
+                select.append(Element('p', text=[chap]))
             fs[chap].append(f)
         # endregion select
 
         # region content
-        content = E('div', attr={'id': 'content'}).append_to(self.body)
+        content = Element('div', attr={'id': 'content'}).append_to(self.body)
 
         # if wrap at page 2n (wrap==2), shift = 1
         # if wrap at page 2n+1 (wrap==1), shift = -1
         shift = 2 * self.wrap - 3
         for chapter, files in fs.items():
-            chap = E('p', attr={'id': chapter}, text=[chapter + '\n']).append_to(content)
+            chap = Element('p', attr={'id': chapter}, text=[chapter + '\n']).append_to(content)
             # upper bound of the list
             upper = len(files) - 1
             # foreach image
@@ -134,7 +134,7 @@ class Writer:
                 # last index or if wrap and i are both even or both odd
                 eol = i == upper or not (self.wrap + i) % 2
                 i = max(min(i + shift, upper), 0)
-                chap.append(E('img', attr={'alt': files[i], 'src': files[i]}, eol=eol))
+                chap.append(Element('img', attr={'alt': files[i], 'src': files[i]}, eol=eol))
                 shift = -shift
 
         # endregion content
