@@ -123,7 +123,7 @@ class Writer:
         content = E('div', attr={'id': 'content'}).append_to(self.body)
 
         # if wrap at page 2n (wrap==2), shift = 1
-        # if wrap at page 1+2n (wrap==1), shift = -1
+        # if wrap at page 2n+1 (wrap==1), shift = -1
         shift = 2 * self.wrap - 3
         for chapter, files in fs.items():
             chap = E('p', attr={'id': chapter}, text=[chapter + '\n']).append_to(content)
