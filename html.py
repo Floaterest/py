@@ -123,8 +123,8 @@ class Writer:
         # region content
         content = Element('div', attr={'id': 'content'}).append_to(self.body)
         # if wrap == 0, then shift = 0
-        # elif wrap at page 2n (wrap==2), then shift = 1
-        # elif wrap at page 2n+1 (wrap==1), then shift = -1
+        # elif wrap at page 2n (wrap == 2), then shift = 1
+        # elif wrap at page 2n+1 (wrap == 1), then shift = -1
         shift = not self.wrap or 2 * self.wrap - 3
         page = 1
         for chapter, files in fs.items():
