@@ -137,8 +137,8 @@ class Writer:
                 both = not (self.wrap + page) % 2
                 # always eol and indent if self.wrap == 0
                 # and always eol at last element and indent at first element
-                eol = not self.wrap or not both or i == upper
-                indent = not self.wrap or both or not i
+                eol = not self.wrap or both or i == upper
+                indent = not self.wrap or not both or not i
                 # make sure i is in list's range
                 i = max(min(i + shift, upper), 0)
                 chap.append(Element('img', attr={
