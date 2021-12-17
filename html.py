@@ -48,8 +48,8 @@ class Element:
                 s += ch.str(indent + 1)
             return s + t + '</' + self.tag + '>' + n
 
-    def append(self, *args: Element):
-        self.children.extend(args)
+    def append(self, element: Element):
+        self.children.append(element)
         return self
 
     def append_to(self, element: Element):
@@ -142,11 +142,12 @@ class Writer:
         # region divs or tables
         if self.wrap:
             page = 1
-            for chap, fs in chapters.items():
-                page, table = self.__table(chap, fs, page)
+            for chap, files in chapters.items():
+                page, table = self.__table(chap, files, page)
                 self.body.append(table)
         else:
-            self.body.append(*[self.__div(ch, fs) for ch, fs in chapters.items()])
+            for chap, files in chapters.items():
+                self.body.append(self.__div(chap, files))
         # endregion divs or tables
         # endregion body
 
