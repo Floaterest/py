@@ -120,35 +120,20 @@ class Writer:
             fs[chap].append(f)
         # endregion select
 
-        # region content
-        content = Element('div', attr={'id': 'content'}).append_to(self.body)
-        # if wrap == 0, then shift = 0
-        # elif wrap at page 2n (wrap == 2), then shift = 1
-        # elif wrap at page 2n+1 (wrap == 1), then shift = -1
-        shift = not self.wrap or 2 * self.wrap - 3
+        # region tables
         page = 1
-        for chapter, files in fs.items():
-            chap = Element('p', attr={'id': chapter}, text=[chapter + '\n']).append_to(content)
-            # upper bound of the list
-            upper = len(files) - 1
-            # foreach image
+        for chap, files in fs.items():
+            t = Element('table', attr={'id': chap}).append_to(self.body)
+            tr = Element('tr')
             for i in range(len(files)):
-                # if wrap and page number(1-indexed) are both even or both odd
-                both = not (self.wrap + page) % 2
-                # always eol and indent if self.wrap == 0
-                # and always eol at last element and indent at first element
-                eol = not self.wrap or both or i == upper
-                indent = not self.wrap or not both or not i
-                # make sure i is in list's range
-                i = max(min(i + shift, upper), 0)
-                chap.append(Element('img', attr={
-                    'alt': files[i], 'src': files[i]
-                }, eol=eol, indent=indent))
-
-                shift = -shift
-                page += 1
-
-        # endregion content
+                # add img to td to tr
+                tr.append(Element('td').append(Element('img', attr={'alt': files[i], 'src': files[i]})))
+                # new tr when going to wrap
+                if not (self.wrap + page) % 2:
+                    tr.append_to(t)
+                    tr = Element('tr')
+                page = (page + 1) % 2
+        # endregion tables
         # endregion body
 
     def write(self, fn: str):
