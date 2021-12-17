@@ -48,8 +48,8 @@ class Element:
                 s += ch.str(indent + 1)
             return s + t + '</' + self.tag + '>' + n
 
-    def append(self, element: Element):
-        self.children.append(element)
+    def append(self, *args: Element):
+        self.children.extend(args)
         return self
 
     def append_to(self, element: Element):
