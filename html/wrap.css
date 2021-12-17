@@ -3,8 +3,8 @@ img{
 	margin: 10px auto;
 }
 
-#content{
-    white-space: pre-line;
+table{
+	direction: rtl;
     /* remove whitespace in between images */
     /* https://stackoverflow.com/a/5647640 */
     font-size: 0;
