@@ -114,6 +114,12 @@ class Writer:
             i = (i + 1) % 2
         return i, table
 
+    @staticmethod
+    def __div(chapter: str, files: list[str]) -> Element:
+        return Element('div', attr={'id': chapter}, text=[chapter], children=[
+            Element('img', attr={'alt': f, 'src': f}) for f in files
+        ])
+
     def tab(self):
         def get_chapter(fn: str) -> str:
             return fn[:-8]
@@ -124,21 +130,24 @@ class Writer:
             Element('code', attr={'id': 'invert'}, text=['invert'])
         ]).append_to(self.body)
 
-        fs = {}
+        chapters = {}
         for f in self.files:
             chap = get_chapter(f)
-            if chap not in fs:
-                fs[chap] = []
+            if chap not in chapters:
+                chapters[chap] = []
                 select.append(Element('p', text=[chap]))
-            fs[chap].append(f)
+            chapters[chap].append(f)
         # endregion select
 
-        # region tables
-        page = 1
-        for chap, files in fs.items():
-            page, table = self.__table(chap, files, page)
-            self.body.append(table)
-        # endregion tables
+        # region divs or tables
+        if self.wrap:
+            page = 1
+            for chap, fs in chapters.items():
+                page, table = self.__table(chap, fs, page)
+                self.body.append(table)
+        else:
+            self.body.append(*[self.__div(ch, fs) for ch, fs in chapters.items()])
+        # endregion divs or tables
         # endregion body
 
     def write(self, fn: str):
@@ -151,5 +160,5 @@ class Writer:
 os.chdir(sys.argv[1])
 # note: wrapping is based on global page number
 # not page number inside each chapter
-w = Writer('tab', 1)
+w = Writer('tab', 0)
 w.write('0')
