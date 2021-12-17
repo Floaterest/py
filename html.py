@@ -101,6 +101,19 @@ class Writer:
         for script in scripts:
             self.html.append(Element('script', indent=False, text=get_src(script)))
 
+    def __table(self, chapter: str, files: list[str], i: int = 1) -> [int, Element]:
+        tr = Element('tr')
+        table = Element('table', attr={'id': chapter})
+        for f in files:
+            # add img to td to tr
+            tr.append(Element('td').append(Element('img', attr={'alt': f, 'src': f})))
+            # create new tr when going to wrap
+            if not (self.wrap + i) % 2:
+                table.append(tr)
+                tr = Element('tr')
+            i = (i + 1) % 2
+        return i, table
+
     def tab(self):
         def get_chapter(fn: str) -> str:
             return fn[:-8]
@@ -123,16 +136,8 @@ class Writer:
         # region tables
         page = 1
         for chap, files in fs.items():
-            t = Element('table', attr={'id': chap}).append_to(self.body)
-            tr = Element('tr')
-            for i in range(len(files)):
-                # add img to td to tr
-                tr.append(Element('td').append(Element('img', attr={'alt': files[i], 'src': files[i]})))
-                # new tr when going to wrap
-                if not (self.wrap + page) % 2:
-                    tr.append_to(t)
-                    tr = Element('tr')
-                page = (page + 1) % 2
+            page, table = self.__table(chap, files, page)
+            self.body.append(table)
         # endregion tables
         # endregion body
 
