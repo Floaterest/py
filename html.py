@@ -105,7 +105,7 @@ class Writer:
 
     def __table(self, chapter: str, files: list[str], i: int = 1) -> [int, Element]:
         tr = Element('tr')
-        table = Element('table', attr={'id': chapter})
+        table = Element('table', attr={'id': chapter, 'class': 'chapter'})
         for f in files:
             # add img to td to tr
             tr.append(Element('td').append(Element('img', attr={'alt': f, 'src': f})))
@@ -118,7 +118,10 @@ class Writer:
 
     @staticmethod
     def __div(chapter: str, files: list[str]) -> Element:
-        return Element('div', attr={'id': chapter}, text=[chapter], children=[
+        return Element('div', attr={
+            'id': chapter,
+            'class': 'chapter'
+        }, text=[chapter], children=[
             Element('img', attr={'alt': f, 'src': f}) for f in files
         ])
 
