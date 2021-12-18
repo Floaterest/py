@@ -1,27 +1,16 @@
 // tab.js
-const content = document.getElementById('content');
-const select = document.getElementById('select');
+const cs = Array.from(document.getElementsByClassName('chapter'));
+const ss = Array.from(document.getElementById('select').getElementsByTagName('p'));
 
 // show/hide selection menu
-content.addEventListener('click', () => {
-    if(content.style.filter){
-        content.style.filter = select.style.display = '';
-    }else{
-        content.style.filter = 'brightness(10%)';
-        select.style.display = 'inline';
-    }
-});
+cs.forEach(ch => ch.addEventListener('click', () => document.body.classList.toggle('dimmed')));
 
 // show/hide chapters
-Array.from(select.getElementsByTagName('p')).forEach(
-    p => p.addEventListener('click', () => {
-        p.classList.toggle('off');
-        document.getElementById(p.innerText)
-            .style.display = p.classList.contains('off') ? 'none' : 'block';
-    })
-);
+ss.forEach(p => p.addEventListener('click', () => {
+    p.classList.toggle('dimmed');
+    document.getElementById(p.innerText).classList.toggle('hidden');
+}));
 
 // click all the selections
-document.getElementById('invert').addEventListener('click',
-    () => Array.from(select.getElementsByTagName('p')).forEach(p => p.click())
-);
+document.getElementById('invert').addEventListener('click', () => ss.forEach(p => p.click()));
+
