@@ -10,11 +10,19 @@
 	z-index: 1;
 }
 
-#select p{
+#select *{
 	padding: 10px;
 	margin: 0 auto;
 }
 
-.off{
-	filter: brightness(30%);
+.hidden{
+	display:none;
+}
+
+body.dimmed .chapter, #select .dimmed{
+	filter:brightness(30%);
+}
+
+body.dimmed #select{
+	display: inline;
 }
