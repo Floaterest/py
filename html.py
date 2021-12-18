@@ -43,6 +43,8 @@ class Element:
             # text
             for line in self.text:
                 s += tt + line
+            if self.children and self.text:
+                s += '\n'
             # children
             for ch in self.children:
                 s += ch.str(indent + 1)
