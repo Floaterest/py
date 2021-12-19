@@ -84,12 +84,12 @@ def init_html(title: str):
 
 
 class Writer:
-    def __init__(self, mode: str, wrap: int):
+    def __init__(self, mode: str, wrap: int, files: list[str]):
         """
         do os.chdir() before init
         """
         self.html, self.head, self.body = init_html(path.basename(os.getcwd()))
-        self.files = sorted([f for f in os.listdir() if is_image(f.lower())])
+        self.files = files
         self.wrap = wrap
         self.generate = self.__getattribute__(mode)
         styles, scripts = MODES[mode]
@@ -176,6 +176,14 @@ def main():
     args = parser.parse_args()
     assert args.mode in MODES, f'"{args.mode}" is not a valid mode!'
     assert path.exists(args.path), f'"{args.path}" is not a valid path!'
+
+    for r, ds, fs in os.walk(args.path):
+        if fs := [f for f in os.listdir() if is_image(f.lower())]:
+            print(r, args.mode)
+            os.chdir(r)
+            Writer(args.mode, args.wrap, sorted(fs)).write()
+        else:
+            print(RED + f'no images in "{r}"' + RESET)
 
 
 if __name__ == '__main__':
