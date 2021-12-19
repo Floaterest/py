@@ -161,21 +161,21 @@ class Writer:
 
 
 def main():
-    p = argparse.ArgumentParser(description='generate a image viwer in HTML')
-    p.add_argument('path', type=str,
-                   help='directory path (use double quote if needed)')
-    p.add_argument('mode', type=str, nargs='?', default=next(iter(MODES)),
-                   help=f'display mode, availables modes are {list(MODES.keys())}')
+    parser = argparse.ArgumentParser(description='generate a image viwer in HTML')
+    parser.add_argument('path', type=str,
+                        help='directory path (use double quote if needed)')
+    parser.add_argument('mode', type=str, nargs='?', default=next(iter(MODES)),
+                        help=f'display mode, availables modes are {list(MODES.keys())}')
     # note: wrapping is based on global page number
     # not page number inside each chapter
-    p.add_argument('wrap', type=int, nargs='?', default=0,
-                   help='wrap option: '
-                        '0 for wrap at each page, '
-                        '1 for wrap at odd page numbers (1-indexed), '
-                        '2 for wrap at even page numbers (1-indexed)')
-    a = p.parse_args()
-    assert a.mode in MODES, f'"{a.mode}" is not a valid mode!'
-    assert path.exists(a.path), f'"{a.path}" is not a valid path!'
+    parser.add_argument('wrap', type=int, nargs='?', default=0,
+                        help='wrap option: '
+                             '0 for wrap at each page, '
+                             '1 for wrap at odd page numbers (1-indexed), '
+                             '2 for wrap at even page numbers (1-indexed)')
+    args = parser.parse_args()
+    assert args.mode in MODES, f'"{args.mode}" is not a valid mode!'
+    assert path.exists(args.path), f'"{args.path}" is not a valid path!'
 
 
 if __name__ == '__main__':
