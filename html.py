@@ -1,5 +1,5 @@
 from __future__ import annotations
-import os, sys
+import os, argparse
 from codecs import open
 from dataclasses import dataclass, field
 
@@ -163,8 +163,23 @@ class Writer:
             f.write(self.html.str())
 
 
-os.chdir(sys.argv[1])
-# note: wrapping is based on global page number
-# not page number inside each chapter
-w = Writer('tab', 0)
-w.write('0')
+def main():
+    p = argparse.ArgumentParser(description='generate a image viwer in HTML')
+    p.add_argument('path', type=str,
+                   help='directory path (use double quote if needed)')
+    p.add_argument('mode', type=str, nargs='?', default=next(iter(MODES)),
+                   help=f'display mode, availables modes are {list(MODES.keys())}')
+    # note: wrapping is based on global page number
+    # not page number inside each chapter
+    p.add_argument('wrap', type=int, nargs='?', default=0,
+                   help='wrap option: '
+                        '0 for wrap at each page, '
+                        '1 for wrap at odd page numbers (1-indexed), '
+                        '2 for wrap at even page numbers (1-indexed)')
+    a = p.parse_args()
+    assert a.mode in MODES, f'"{a.mode}" is not a valid mode!'
+    assert path.exists(a.path), f'"{a.path}" is not a valid path!'
+
+
+if __name__ == '__main__':
+    main()
