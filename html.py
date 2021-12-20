@@ -57,7 +57,7 @@ class Element:
 
 
 MODES = {
-    't2b': [['t2b.css'], []],
+    # 't2b': [['t2b.css'], []],
     'tab': [['t2b.css', 'tab.css'], ['tab.js']],
 }
 
