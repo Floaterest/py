@@ -3,7 +3,11 @@ const cs = Array.from(document.getElementsByClassName('chapter'));
 const ss = Array.from(document.getElementById('select').getElementsByTagName('p'));
 
 // show/hide selection menu
-cs.forEach(ch => ch.addEventListener('click', () => document.body.classList.toggle('dimmed')));
+cs.forEach(ch => ch.addEventListener('click', () => {
+    if(document.body.classList.toggle('dimmed')){
+        ss.forEach(p => p.classList.toggle('selected', p.innerText == ch.id));
+    }
+}));
 
 // show/hide chapters
 ss.forEach(p => p.addEventListener('click', () => {
@@ -13,4 +17,3 @@ ss.forEach(p => p.addEventListener('click', () => {
 
 // click all the selections
 document.getElementById('invert').addEventListener('click', () => ss.forEach(p => p.click()));
-
