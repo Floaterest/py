@@ -178,7 +178,7 @@ def main():
     assert path.exists(args.path), f'"{args.path}" is not a valid path!'
 
     for r, ds, fs in os.walk(args.path):
-        if fs := [f for f in os.listdir() if is_image(f.lower())]:
+        if fs := [f for f in os.listdir(r) if is_image(f.lower())]:
             print(r, args.mode)
             os.chdir(r)
             Writer(args.mode, args.wrap, sorted(fs)).write('0')
