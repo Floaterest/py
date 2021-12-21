@@ -1,6 +1,8 @@
 // tab.js
 const cs = Array.from(document.getElementsByClassName('chapter'));
-const ss = Array.from(document.getElementById('select').getElementsByTagName('p'));
+const ss = Array.from(
+    document.getElementById('select').getElementsByTagName('p')
+);
 
 // show/hide selection menu
 cs.forEach(ch => ch.addEventListener('click', () => {
@@ -16,4 +18,5 @@ ss.forEach(p => p.addEventListener('click', () => {
 }));
 
 // click all the selections
-document.getElementById('invert').addEventListener('click', () => ss.forEach(p => p.click()));
+document.getElementById('invert')
+    .addEventListener('click', () => ss.forEach(p => p.click()));
