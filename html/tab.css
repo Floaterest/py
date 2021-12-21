@@ -19,6 +19,10 @@
 	display:none;
 }
 
+.selected{
+	color:red;
+}
+
 body.dimmed .chapter, #select .dimmed{
 	filter:brightness(30%);
 }
