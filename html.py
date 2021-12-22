@@ -152,12 +152,13 @@ class Writer:
                 self.body.append(self.__div(chap, files))
         # endregion divs or tables
         # endregion body
+        return self.html
 
     def write(self, fn: str):
-        self.generate()
+        html = self.generate()
         with open(fn + '.html', 'w', 'utf8') as f:
             f.write('<!doctype html>\n')
-            f.write(self.html.str())
+            f.write(html.str())
 
 
 def main():
