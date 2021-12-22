@@ -18,7 +18,7 @@ def main():
     parser.add_argument('path', type=str,
                         help='directory path (use double quote if needed)')
     parser.add_argument('mode', type=str, nargs='?', default=next(iter(MODES)),
-                        help=f'display mode, availables modes are {list(MODES.keys())}')
+                        help=f'display mode, available modes are {list(MODES.keys())}')
     # note: wrapping is based on global page number
     # not page number inside each chapter
     parser.add_argument('wrap', type=int, nargs='?', default=0,
