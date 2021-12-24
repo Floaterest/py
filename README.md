@@ -1,5 +1,10 @@
-# PY
+# PY <!-- omit in toc -->
 > Personal python utility scripts
+
+<!-- omit in toc -->
+# Table of Contents
+- [Scripts](#scripts)
+    - [html.py](#htmlpy)
 
 # Scripts
 ## html.py
