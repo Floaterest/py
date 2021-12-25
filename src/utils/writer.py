@@ -3,7 +3,7 @@ from os import path, getcwd
 from codecs import open
 from dataclasses import dataclass, field
 
-SRC = path.abspath('html/')
+SRC = path.abspath('utils/')
 VOID = ['meta', 'img', 'br']
 MODES = {
     # 't2b': [['t2b.css'], []],
@@ -17,7 +17,7 @@ class Element:
     attr: dict = field(default_factory=dict)
     text: list[str] = field(default_factory=list)
     children: list[Element] = field(default_factory=list)
-    # whether itself should be indented in the final html
+    # whether itself should be indented in the final utils
     indent: bool = True
 
     def str(self, indent=0) -> str:
@@ -62,7 +62,7 @@ def get_src(fn: str):
 
 
 def init_html(title: str):
-    html = Element('html', attr={'lang': 'en'})
+    html = Element('utils', attr={'lang': 'en'})
     return (
         html,
         Element('head', indent=False, children=[
@@ -146,6 +146,6 @@ class Writer:
 
     def write(self, fn: str):
         html = self.generate()
-        with open(fn + '.html', 'w', 'utf8') as f:
-            f.write('<!doctype html>\n')
+        with open(fn + '.utils', 'w', 'utf8') as f:
+            f.write('<!doctype utils>\n')
             f.write(html.str())
