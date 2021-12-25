@@ -1,7 +1,7 @@
 import os
 import argparse
 
-from html.writer import Writer, MODES
+from utils.writer import Writer, MODES
 
 EXTENSIONS = ['.png', '.jpg', '.gif']
 
