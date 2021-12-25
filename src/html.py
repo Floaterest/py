@@ -14,7 +14,7 @@ def is_image(fn: str) -> bool:
 
 
 def main():
-    parser = argparse.ArgumentParser(description='generate a image viwer in HTML')
+    parser = argparse.ArgumentParser(description='generate a image viewer in HTML')
     parser.add_argument('path', type=str,
                         help='directory path (use double quote if needed)')
     parser.add_argument('mode', type=str, nargs='?', default=next(iter(MODES)),
