@@ -16,8 +16,8 @@
         - current available modes are tab
         - by default, the script will use the 1st display mode
     - `wrap`: wrap option
-        - `0` for wrap at each page
-        - `1` for wrap after page with odd page numbers (1-indexed)
-        - `2` for wrap after page with even page numbers (1-indexed)
+        - `0` to wrap after each page
+        - `1` to wrap after page with odd page numbers (1-indexed)
+        - `2` to wrap after page with even page numbers (1-indexed)
 - optional arguments
     - `-h`, `--help`: display a help page
