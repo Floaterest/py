@@ -23,9 +23,9 @@ def main():
     # not page number inside each chapter
     parser.add_argument('wrap', type=int, nargs='?', default=0,
                         help='wrap option: '
-                             '0 for wrap at each page, '
-                             '1 for wrap at odd page numbers (1-indexed), '
-                             '2 for wrap at even page numbers (1-indexed)')
+                             '0 to wrap after each page, '
+                             '1 to wrap after page with odd page numbers (1-indexed), '
+                             '2 to wrap after page with even page numbers (1-indexed)')
     args = parser.parse_args()
     assert args.mode in MODES, f'"{args.mode}" is not a valid mode!'
     assert os.path.exists(args.path), f'"{args.path}" is not a valid path!'
