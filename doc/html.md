@@ -20,9 +20,10 @@
 [Back to top](#table-of-contents)
 - `path`: directory path
     - the script will search for folders that contain images **recursively**
+        - how the script determine whether a file is an image is defined [here](#definition-of-image-file) 
     - if `path` contains spaces, quote it with double quote (`"/path to/destination folder/"`)
 - `mode`: display mode
-    - current available modes are tab
+    - current available modes are [tab](#tab)
     - by default, the script will use the 1st display mode
 - `wrap`: wrap option
     - `0` to wrap after each page
