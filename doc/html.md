@@ -9,6 +9,8 @@
     - [Optional Arguments](#optional-arguments)
 - [More Details](#more-details)
     - [Definition of Image File](#definition-of-image-file)
+    - [Display Modes](#display-modes)
+        - [Tab](#tab)
 
 
 # Usage
@@ -38,3 +40,13 @@
 [Back to top](#table-of-contents)
 - if a file's extension is in `.png`, `.jpg`, and `.gif`, then the file is considered an image and will be included in the final HTML output
     - in the source code ([html.py](../src/html.py)), it is defined in the `EXTENSIONS` constant and the `is_image(fn: str) -> bool` function
+
+## Display Modes
+[Back to top](#table-of-contents)
+
+### Tab
+- features
+    - click on an image to toggle table of contents(toc) on the right
+    - in toc, automatically hightlight the current reading chapter (determined based on which chapter was clicked)
+    - in toc, click on a chapter to toggle the visibility of that chapter
+    - in toc, the `invert` button will switch the visibility of all chapter (programmatically defined as click on all the chapters once)
