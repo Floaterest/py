@@ -11,6 +11,8 @@
     - [Definition of Image File](#definition-of-image-file)
     - [Display Modes](#display-modes)
         - [Tab](#tab)
+    - [Wrap Options](#wrap-options)
+        - [`0`: Wrap After Each Page](#0-wrap-after-each-page)
 
 
 # Usage
@@ -55,3 +57,23 @@
     - [tab.css](../src/utils/tab.css)
     - [tab.js](../src/utils/tab.js)
     - [wrap0.css](../src/utils/wrap0.css) or [wrap.css](../src/utils/wrap.css) depending on the wrap option (see [Positional Arguments](#positional-arguments))
+
+## Wrap Options
+[Back to top](#table-of-contents)
+### `0`: Wrap After Each Page 
+<details><summary>The final result will look like this:</summary>
+
+```
+1
+2
+3
+4
+5
+6
+7
+8
+9
+...
+```
+
+</details>
