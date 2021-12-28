@@ -51,3 +51,8 @@
     - in toc, automatically hightlight the current reading chapter (determined based on which chapter was clicked)
     - in toc, click on a chapter to toggle the visibility of that chapter
     - in toc, the `invert` button will switch the visibility of all chapter (programmatically defined as click on all the chapters once)
+- styles and scripts (defined in `MODES` from [writer.py](../src/utils/writer.py))
+    - [t2b.css](../src/utils/t2b.css)
+    - [tab.css](../src/utils/tab.css)
+    - [tab.js](../src/utils/tab.js)
+    - [wrap0.css](../src/utils/wrap0.css) or [wrap.css](../src/utils/wrap.css) depending on the wrap option (see [Positional Arguments](#positional-arguments))
