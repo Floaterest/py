@@ -146,6 +146,6 @@ class Writer:
 
     def write(self, fn: str):
         html = self.generate()
-        with open(fn + '.utils', 'w', 'utf8') as f:
+        with open(fn + '.html', 'w', 'utf8') as f:
             f.write('<!doctype utils>\n')
             f.write(html.str())
