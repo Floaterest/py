@@ -43,9 +43,8 @@
     - in the source code ([html.py](../src/html.py)), it is defined in the `EXTENSIONS` constant and the `is_image(fn: str) -> bool` function
 
 ## Display Modes
-[Back to top](#table-of-contents)
-
 ### Tab
+[Back to top](#table-of-contents)
 - features
     - click on an image to toggle table of contents(toc) on the right
     - in toc, automatically hightlight the current reading chapter (determined based on which chapter was clicked)
