@@ -101,6 +101,7 @@ class Writer:
                 table.append(tr)
                 tr = Element('tr')
             i = (i + 1) % 2
+        table.append(tr)
         return i, table
 
     @staticmethod
