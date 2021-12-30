@@ -93,15 +93,16 @@ class Writer:
     def __table(self, chapter: str, files: list[str], i: int = 1) -> [int, Element]:
         tr = Element('tr')
         table = Element('table', attr={'id': chapter, 'class': 'chapter'})
+        tbody = Element('tbody').append_to(table)
         for f in files:
             # add img to td to tr
             tr.append(Element('td').append(Element('img', attr={'alt': f, 'src': f})))
             # create new tr when going to wrap
             if not (self.wrap + i) % 2:
-                table.append(tr)
+                tbody.append(tr)
                 tr = Element('tr')
             i = (i + 1) % 2
-        table.append(tr)
+        tbody.append(tr)
         return i, table
 
     @staticmethod
