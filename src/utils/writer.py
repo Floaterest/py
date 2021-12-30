@@ -62,7 +62,7 @@ def get_src(fn: str):
 
 
 def init_html(title: str):
-    html = Element('utils', attr={'lang': 'en'})
+    html = Element('html', attr={'lang': 'en'})
     return (
         html,
         Element('head', indent=False, children=[
@@ -149,5 +149,5 @@ class Writer:
     def write(self, fn: str):
         html = self.generate()
         with open(fn + '.html', 'w', 'utf8') as f:
-            f.write('<!doctype utils>\n')
+            f.write('<!doctype html>\n')
             f.write(html.str())
