@@ -104,7 +104,9 @@ class Writer:
                 tbody.append(tr)
                 tr = Element('tr')
             i = (i + 1) % 2
-        tbody.append(tr)
+        if tr.children:
+            # append the last td if exists
+            tbody.append(tr)
         return i, table
 
     @staticmethod
