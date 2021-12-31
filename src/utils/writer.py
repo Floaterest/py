@@ -24,8 +24,6 @@ class Element:
 
     def str(self, indent=0, endl='\n') -> str:
         t = '\t' * indent
-        # '\n' after start tag
-        n = '\n' * (not self.inline)
         # start tag
         s = t + '<' + self.tag
         # add attributes
@@ -33,11 +31,15 @@ class Element:
             s += f' {attr}="{value}"'
         if self.tag in VOID:
             return s + '>' + endl
-        elif not len(self.children) and len(self.text) < 2:
-            # if no children and text is at most 1 line
-            return s + '>' + ''.join(self.text) + '</' + self.tag + '>' + endl
         else:
-            tt = t + '\t'
+            # if no children elements and text is at most 1 line
+            if not len(self.children) and len(self.text) <= 1:
+                # enable inline
+                self.inline = True
+            # '\n' after start tag
+            n = '\n' * (not self.inline)
+
+            tt = (t + '\t') * (not self.inline)
             s += '>' + n
             # text
             for line in self.text:
@@ -50,7 +52,8 @@ class Element:
             for ch in self.children:
                 # remove the last `\n` character if inline
                 s += ch.str(indent, n)
-            return s + t * (not self.inline) + '</' + self.tag + '>' + endl
+            # no '\t' before close tag if inline
+            return s + t * (not self.inline) + f'</{self.tag}>' + endl
 
     def append(self, element: Element):
         self.children.append(element)
