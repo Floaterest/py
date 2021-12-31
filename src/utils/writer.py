@@ -17,37 +17,41 @@ class Element:
     attr: dict = field(default_factory=dict)
     text: list[str] = field(default_factory=list)
     children: list[Element] = field(default_factory=list)
-    # whether its children's indent should be increased in the final HTML
+    # whether its children's indent should be increased
     indent: bool = True
+    # whether its children should be on the same line
     inline: bool = False
-    eol: bool = True
 
-    def str(self, indent=0) -> str:
+    def str(self, indent=0, endl='\n') -> str:
         t = '\t' * indent
+        # '\n' after start tag
+        nstart = '\n' * (not self.inline)
         # start tag
         s = t + '<' + self.tag
         # add attributes
         for attr, value in self.attr.items():
             s += f' {attr}="{value}"'
         if self.tag in VOID:
-            return s + '>' + '\n' * self.eol
+            return s + '>' + endl
         elif not len(self.children) and len(self.text) < 2:
             # if no children and text is at most 1 line
-            return s + '>' + ''.join(self.text) + '</' + self.tag + '>' + '\n' * self.eol
+            return s + '>' + ''.join(self.text) + '</' + self.tag + '>' + endl
         else:
-            n = '\n' * (not self.inline)
             tt = t + '\t'
-            s += '>' + n
+            s += '>' + nstart
             # text
             for line in self.text:
                 s += tt + line
             if self.children and self.text:
-                s += n
+                s += nstart
             # children
+            # increase indent of self.indent
+            indent = (indent + self.indent) * (not self.inline)
+            n = '\n' * (not self.inline)
             for ch in self.children:
-                # increase indent of self.indent
-                s += ch.str((indent + self.indent) * (not self.inline))
-            return s + t * (not self.inline) + '</' + self.tag + '>' + '\n' * self.eol
+                # remove the last `\n` character if inline
+                s += ch.str(indent, n)
+            return s + t * (not self.inline) + '</' + self.tag + '>' + endl
 
     def append(self, element: Element):
         self.children.append(element)
@@ -98,7 +102,7 @@ class Writer:
         tbody = Element('tbody').append_to(table)
         for f in files:
             # add img to td to tr
-            tr.append(Element('td', inline=True).append(Element('img', attr={'alt': f, 'src': f}, eol=False)))
+            tr.append(Element('td', inline=True).append(Element('img', attr={'alt': f, 'src': f})))
             # create new tr when going to wrap
             if not (self.wrap + i) % 2:
                 tbody.append(tr)
