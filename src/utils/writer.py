@@ -25,7 +25,7 @@ class Element:
     def str(self, indent=0, endl='\n') -> str:
         t = '\t' * indent
         # '\n' after start tag
-        nstart = '\n' * (not self.inline)
+        n = '\n' * (not self.inline)
         # start tag
         s = t + '<' + self.tag
         # add attributes
@@ -38,16 +38,15 @@ class Element:
             return s + '>' + ''.join(self.text) + '</' + self.tag + '>' + endl
         else:
             tt = t + '\t'
-            s += '>' + nstart
+            s += '>' + n
             # text
             for line in self.text:
                 s += tt + line
             if self.children and self.text:
-                s += nstart
+                s += n
             # children
             # increase indent of self.indent
             indent = (indent + self.indent) * (not self.inline)
-            n = '\n' * (not self.inline)
             for ch in self.children:
                 # remove the last `\n` character if inline
                 s += ch.str(indent, n)
