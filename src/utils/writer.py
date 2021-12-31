@@ -22,13 +22,13 @@ class Element:
     # whether its children should be on the same line
     inline: bool = False
 
-    def str(self, indent=0, endl='\n') -> str:
-        t = '\t' * indent
+    def str(self, indent='', endl='\n') -> str:
         # start tag
-        s = t + '<' + self.tag
+        s = indent + '<' + self.tag
         # add attributes
         for attr, value in self.attr.items():
             s += f' {attr}="{value}"'
+
         if self.tag in VOID:
             return s + '>' + endl
         else:
@@ -36,24 +36,27 @@ class Element:
             if not len(self.children) and len(self.text) <= 1:
                 # enable inline
                 self.inline = True
-            # '\n' after start tag
+            # '\n' if not inline
             n = '\n' * (not self.inline)
+            t = indent
+            # increase indent if not self.indent or not inline
+            if self.indent and not self.inline:
+                t += '\t'
+            elif self.inline:
+                t = ''
 
-            tt = (t + '\t') * (not self.inline)
             s += '>' + n
             # text
             for line in self.text:
-                s += tt + line
+                s += t + line
             if self.children and self.text:
                 s += n
             # children
-            # increase indent of self.indent
-            indent = (indent + self.indent) * (not self.inline)
             for ch in self.children:
                 # remove the last `\n` character if inline
-                s += ch.str(indent, n)
-            # no '\t' before close tag if inline
-            return s + t * (not self.inline) + f'</{self.tag}>' + endl
+                s += ch.str(t, n)
+            # no '\t' before start tag if inline
+            return s + indent * (not self.inline) + f'</{self.tag}>' + endl
 
     def append(self, element: Element):
         self.children.append(element)
