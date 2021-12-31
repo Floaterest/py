@@ -17,12 +17,10 @@ class Element:
     attr: dict = field(default_factory=dict)
     text: list[str] = field(default_factory=list)
     children: list[Element] = field(default_factory=list)
-    # whether itself should be indented in the final utils
+    # whether its children's indent should be increased in the final HTML
     indent: bool = True
 
     def str(self, indent=0) -> str:
-        # no indent if not self.indent
-        indent *= self.indent
         t = '\t' * indent
         # start tag
         s = t + '<' + self.tag
@@ -44,7 +42,8 @@ class Element:
                 s += '\n'
             # children
             for ch in self.children:
-                s += ch.str(indent + 1)
+                # increase indent of self.indent
+                s += ch.str(indent + self.indent)
             return s + t + '</' + self.tag + '>\n'
 
     def append(self, element: Element):
@@ -62,14 +61,14 @@ def get_src(fn: str):
 
 
 def init_html(title: str):
-    html = Element('html', attr={'lang': 'en'})
+    html = Element('html', attr={'lang': 'en'}, indent=False)
     return (
         html,
-        Element('head', indent=False, children=[
+        Element('head', children=[
             Element('meta', attr={'charset': 'utf8'}),
             Element('title', text=[title]),
         ]).append_to(html),
-        Element('body', indent=False).append_to(html)
+        Element('body').append_to(html)
     )
 
 
