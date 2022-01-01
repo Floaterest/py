@@ -13,6 +13,8 @@
         - [Tab](#tab)
     - [Wrap Options](#wrap-options)
         - [`0`: Wrap After Each Page](#0-wrap-after-each-page)
+        - [`1`: Wrap After Odd Pages](#1-wrap-after-odd-pages)
+        - [`2`: Wrap After Even Pages](#2-wrap-after-even-pages)
 
 
 # Usage
@@ -60,6 +62,7 @@
 
 ## Wrap Options
 [Back to top](#table-of-contents)
+
 ### `0`: Wrap After Each Page 
 <details><summary>The final result will look like this:</summary>
 
@@ -77,3 +80,47 @@
 ```
 
 </details>
+
+### `1`: Wrap After Odd Pages
+<details><summary>The final result will look like this:</summary>
+
+```
+1 
+32
+54
+76
+98
+```
+or
+```
+1
+32
+54
+76
+8
+```
+</details>
+- the pages are right to left because that is just how manga works
+- the alignment is done using `<table>`
+
+### `2`: Wrap After Even Pages
+<details><summary>The final result will look like this:</summary>
+
+```
+21
+43
+65
+87
+9
+```
+or
+```
+21
+43
+65
+87
+```
+
+</details>
+- the pages are right to left because that is just how manga works
+- the alignment is done using `<table>`
