@@ -105,6 +105,10 @@ class Writer:
         tr = Element('tr')
         table = Element('table', attr={'id': chapter, 'class': 'chapter'})
         tbody = Element('tbody').append_to(table)
+        # add empty td in the beginning if wrap at odd
+        if self.wrap == 1:
+            tr.append(Element('td', inline=True))
+
         for f in files:
             # add img to td to tr
             tr.append(Element('td', inline=True).append(Element('img', attr={'alt': f, 'src': f})))
