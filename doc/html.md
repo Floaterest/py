@@ -100,7 +100,7 @@ or
 ```
 </details>
 - the pages are right to left because that is just how manga works
-- the alignment is done using `<table>`
+- the alignment is done using <code>&lt;table&gt;</code>
 
 ### `2`: Wrap After Even Pages
 <details><summary>The final result will look like this:</summary>
@@ -122,4 +122,4 @@ or
 
 </details>
 - the pages are right to left because that is just how manga works
-- the alignment is done using `<table>`
+- the alignment is done using <code>&lt;table&gt;</code>
