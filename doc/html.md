@@ -26,10 +26,10 @@
     - the script will search for folders that contain images **recursively**
         - how the script determine whether a file is an image is defined [here](#definition-of-image-file) 
     - if `path` contains spaces, quote it with double quote (`"/path to/destination folder/"`)
-- `mode`: display mode
+- `mode`: display mode, more details: [#display-modes](#display-modes)
     - current available modes are [tab](#tab)
     - by default, the script will use the 1st display mode
-- `wrap`: wrap option
+- `wrap`: wrap option, more details: [#wrap-options](#wrap-options)
     - `0` to wrap after each page
     - `1` to wrap after page with odd page numbers (1-indexed)
     - `2` to wrap after page with even page numbers (1-indexed)
