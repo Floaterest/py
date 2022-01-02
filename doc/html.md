@@ -8,7 +8,9 @@
     - [Positional Arguments](#positional-arguments)
     - [Optional Arguments](#optional-arguments)
 - [More Details](#more-details)
-    - [Definition of Image File](#definition-of-image-file)
+    - [File Searching](#file-searching)
+        - [Recursive](#recursive)
+        - [Definition of Image File](#definition-of-image-file)
     - [Display Modes](#display-modes)
         - [Tab](#tab)
     - [Wrap Options](#wrap-options)
@@ -22,9 +24,7 @@
 
 ## Positional Arguments
 [Back to top](#table-of-contents)
-- `path`: directory path
-    - the script will search for folders that contain images **recursively**
-        - how the script determine whether a file is an image is defined [here](#definition-of-image-file) 
+- `path`: directory path, more details: [#file-searching](#file-searching)
     - if `path` contains spaces, quote it with double quote (`"/path to/destination folder/"`)
 - `mode`: display mode, more details: [#display-modes](#display-modes)
     - current available modes are [tab](#tab)
@@ -41,8 +41,11 @@
 
 # More Details
 
-## Definition of Image File
+## File Searching
 [Back to top](#table-of-contents)
+### Recursive
+- the script will look for `path` and its subfolders that contain images (using `os.walk()`)
+### Definition of Image File
 - if a file's extension is in `.png`, `.jpg`, and `.gif`, then the file is considered an image and will be included in the final HTML output
     - in the source code ([html.py](../src/html.py)), it is defined in the `EXTENSIONS` constant and the `is_image(fn: str) -> bool` function
 
@@ -62,7 +65,6 @@
 
 ## Wrap Options
 [Back to top](#table-of-contents)
-
 ### `0`: Wrap After Each Page 
 <details><summary>The final result will look like this:</summary>
 
