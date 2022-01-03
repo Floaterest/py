@@ -47,7 +47,7 @@
 - the script will look for `path` and its subfolders that contain images (using `os.walk()`)
 ### Definition of Image File
 - if a file's extension is in `.png`, `.jpg`, and `.gif`, then the file is considered an image and will be included in the final HTML output
-    - in the source code ([html.py](../src/html.py)), it is defined in the `EXTENSIONS` constant and the `is_image(fn: str) -> bool` function
+    - in the source code ([common.py](../src/utils/common.py)), it is defined in the `EXTENSIONS` constant and the `is_image(fn: str) -> bool` function
 
 ## Display Modes
 [Back to top](#table-of-contents)
