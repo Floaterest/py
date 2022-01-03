@@ -2,15 +2,10 @@ import os
 import argparse
 
 from utils.writer import Writer, MODES
-
-EXTENSIONS = ['.png', '.jpg', '.gif']
+from utils.common import is_image
 
 RED = '\033[1;31m'
 RESET = '\033[0;0m'
-
-
-def is_image(fn: str) -> bool:
-    return any([fn.endswith(ext) for ext in EXTENSIONS])
 
 
 def main():
