@@ -13,3 +13,7 @@ td{
     border-bottom: 10px solid #39c5bb;
     padding: 0;
 }
+
+tr td:first-child img{
+    float:left;
+}
