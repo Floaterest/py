@@ -1,4 +1,4 @@
-EXTENSIONS = ['.png', '.jpg', '.gif']
+EXTENSIONS = ['.png', '.jpg', '.gif', '.jpeg']
 
 
 def is_image(fn: str) -> bool:
