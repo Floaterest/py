@@ -25,9 +25,9 @@ def main():
     assert args.mode in MODES, f'"{args.mode}" is not a valid mode!'
     assert os.path.exists(args.path), f'"{args.path}" is not a valid path!'
 
-    for r, ds, fs in os.walk(args.path):
+    for r, ds, fs in os.walk(os.path.abspath(args.path)):
         if fs := [f for f in os.listdir(r) if is_image(f.lower())]:
-            print(r, args.mode)
+            print(r, args.mode, args.wrap)
             os.chdir(r)
             Writer(args.mode, args.wrap, sorted(fs)).write('index')
         else:
