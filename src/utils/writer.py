@@ -3,7 +3,7 @@ from os import path, getcwd
 from codecs import open
 from dataclasses import dataclass, field
 
-SRC = path.abspath('utils/')
+SRC = path.dirname(path.realpath(__file__))
 VOID = ['meta', 'img', 'br']
 MODES = {
     't2b': [['t2b.css'], []],
@@ -67,8 +67,8 @@ class Element:
         return self
 
 
-def get_src(fn: str):
-    with open(path.join(SRC, fn), 'r', 'utf8') as f:
+def get_src(fpath: str):
+    with open(path.join(SRC, fpath), 'r', 'utf8') as f:
         return f.readlines()
 
 
@@ -89,6 +89,7 @@ class Writer:
         """
         do os.chdir() before init
         """
+
         self.html, self.head, self.body = init_html(path.basename(getcwd()))
         self.files = files
         self.wrap = wrap
@@ -104,7 +105,6 @@ class Writer:
     def __table(self, chapter: str, files: list[str], i: int = 1) -> [int, Element]:
         tr = Element('tr')
         table = Element('table', attr={'id': chapter, 'class': 'chapter'})
-        tbody = Element('tbody').append_to(table)
         # add empty td in the beginning if wrap at odd
         if self.wrap == 1:
             tr.append(Element('td', inline=True))
@@ -114,12 +114,12 @@ class Writer:
             tr.append(Element('td', inline=True).append(Element('img', attr={'alt': f, 'src': f})))
             # create new tr when going to wrap
             if not (self.wrap + i) % 2:
-                tbody.append(tr)
+                table.append(tr)
                 tr = Element('tr')
             i = (i + 1) % 2
         if tr.children:
             # append the last td if exists
-            tbody.append(tr)
+            table.append(tr)
         return i, table
 
     @staticmethod

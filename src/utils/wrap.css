@@ -1,9 +1,6 @@
 /* wrap.css */
 table{
 	direction: rtl;
-    /* remove whitespace in between images */
-    /* https://stackoverflow.com/a/5647640 */
-    font-size: 0;
     margin: 0 auto;
     border-collapse: collapse;
 }
