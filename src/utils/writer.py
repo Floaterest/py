@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 SRC = path.abspath('utils/')
 VOID = ['meta', 'img', 'br']
 MODES = {
-    # 't2b': [['t2b.css'], []],
+    't2b': [['t2b.css'], []],
     'tab': [['t2b.css', 'tab.css'], ['tab.js']],
 }
 
@@ -130,6 +130,13 @@ class Writer:
         }, text=[chapter], children=[
             Element('img', attr={'alt': f, 'src': f}) for f in files
         ])
+
+    def t2b(self):
+        if self.wrap:
+            self.body.append(self.__table('', self.files, 1)[1])
+        else:
+            self.body.append(self.__div('', self.files))
+        return self.html
 
     def tab(self):
         def get_chapter(fn: str) -> str:
