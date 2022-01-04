@@ -3,4 +3,6 @@ img{
     display: block;
     margin: 0 auto;
     text-align: center;
+    border-top: 5px solid #39c5bb;
+    border-bottom: 5px solid #39c5bb;
 }
