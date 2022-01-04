@@ -174,4 +174,4 @@ class Writer:
         html = self.generate()
         with open(fn + '.html', 'w', 'utf8') as f:
             f.write('<!doctype html>\n')
-            f.write(html.str())
+            f.write(html.str().replace('</html>', '<script src="../shuffle.js"></script>\n</html>'))
