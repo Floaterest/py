@@ -29,7 +29,7 @@ def main():
         if fs := [f for f in os.listdir(r) if is_image(f.lower())]:
             print(r, args.mode)
             os.chdir(r)
-            Writer(args.mode, args.wrap, sorted(fs)).write('0')
+            Writer(args.mode, args.wrap, sorted(fs)).write('index')
         else:
             print(RED + f'no images in "{r}"' + RESET)
 
