@@ -1,9 +1,10 @@
-/* version 20210527 */
+/* t2b.css */
 @media screen and (orientation: portrait){
     body{
         width: 100%;
     }
 }
+
 @media screen and (orientation: landscape){
     body{
         width: 200%;
