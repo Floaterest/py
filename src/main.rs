@@ -1,6 +1,9 @@
-use std::path::PathBuf;
+mod html;
+
+use std::{error::Error, path::PathBuf};
 
 use clap::{Parser, Subcommand, ValueEnum};
+
 
 #[derive(Parser, Debug)]
 struct Args {
@@ -20,7 +23,7 @@ enum Command {
 }
 
 #[derive(ValueEnum, Debug, Clone)]
-enum Wrap {
+pub enum Wrap {
     /// no wrap
     #[clap(alias = "0")]
     NoWrap,
@@ -35,12 +38,10 @@ enum Wrap {
     Guess,
 }
 
-fn main() {
+fn main() -> Result<(), Box<dyn Error>> {
     let args = Args::parse();
     match args.command {
-        Command::Html { wrap, .. } => {
-            println!("{:?}", wrap)
-        }
+        Command::Html { path, wrap } => html::run(path, wrap)?,
     }
-    println!("Hello, world!");
+    Ok(println!("Hello, world!"))
 }
