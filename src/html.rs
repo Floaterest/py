@@ -32,7 +32,7 @@ pub fn run(d: PathBuf, wrap: Wrap) -> Result<(), Box<dyn Error>> {
             (DOCTYPE)
             head {
                 meta charset="utf8";
-                title { ("title") }
+                title { (d.file_name().and_then(|p|p.to_str()).unwrap_or("title")) }
             }
             body {
                 @for image in images.iter() {
