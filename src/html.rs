@@ -1,8 +1,14 @@
-use std::{cmp::Reverse, collections::BinaryHeap, error::Error, fs, path::PathBuf};
+use std::{error::Error, fs, path::PathBuf};
 
+const STYLE: &str = include_str!("./style.css");
+const WRAP: &str = include_str!("./wrap.css");
 use maud::{html, DOCTYPE};
 
 use crate::Wrap;
+
+fn minify(css: &str) -> String {
+    css.replace(|ch| matches!(ch, '\n' | '\t'), "")
+}
 
 fn is_image(path: &PathBuf) -> bool {
     let ext = match path.extension() {
@@ -33,8 +39,16 @@ pub fn run(d: PathBuf, wrap: Wrap) -> Result<(), Box<dyn Error>> {
             head {
                 meta charset="utf8";
                 title { (d.file_name().and_then(|p|p.to_str()).unwrap_or("title")) }
+                style { (minify(STYLE)) }
+                @if matches!(wrap, Wrap::Odd | Wrap::Even) {
+                    style { (minify(WRAP)) }
+                }
             }
             body {
+                // dummy image for odd wrapping
+                @if wrap == Wrap::Odd {
+                    img {}
+                }
                 @for image in images.iter() {
                     img alt=(image) src=(image) {}
                 }

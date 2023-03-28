@@ -22,17 +22,17 @@ enum Command {
     },
 }
 
-#[derive(ValueEnum, Debug, Clone)]
+#[derive(ValueEnum, Debug, Clone, PartialEq)]
 pub enum Wrap {
     /// no wrap
     #[clap(alias = "0")]
-    NoWrap,
+    None,
     /// wrap after odd pages
     #[clap(alias = "1")]
-    WrapOdd,
+    Odd,
     /// wrap after even pages
     #[clap(alias = "2")]
-    WrapEven,
+    Even,
     #[clap(alias = "g")]
     /// guess between odd and even
     Guess,
