@@ -10,7 +10,7 @@ fn minify(css: &str) -> String {
     css.replace(|ch| matches!(ch, '\n' | '\t'), "")
 }
 
-fn is_image(path: &PathBuf) -> bool {
+fn is_image(path: &&PathBuf) -> bool {
     let ext = match path.extension() {
         Some(ext) => ext,
         None => return false,
@@ -22,14 +22,14 @@ fn is_image(path: &PathBuf) -> bool {
     matches!(ext, "png" | "jpg" | "jpeg" | "gif" | "avif")
 }
 
-pub fn run(d: PathBuf, wrap: Wrap) -> Result<(), Box<dyn Error>> {
+fn basename(path: &PathBuf) -> Option<&str> {
+    path.file_name().and_then(|p| p.to_str()).and_then(|p| Some(p))
+}
+
+pub fn run(d: &PathBuf, wrap: &Wrap) -> Result<(), Box<dyn Error>> {
     // get images
-    let mut images: Vec<_> = fs::read_dir(&d)?
-        .flatten()
-        .map(|e| e.path())
-        .filter(is_image)
-        .flat_map(|p| p.file_name().and_then(|p| p.to_str()).and_then(|p| Some(p.to_owned())))
-        .collect();
+    let paths: Vec<_> = fs::read_dir(&d)?.flatten().map(|e| e.path()).collect();
+    let mut images: Vec<_> = paths.iter().filter(is_image).flat_map(basename).collect();
     images.sort();
 
     fs::write(
@@ -46,7 +46,7 @@ pub fn run(d: PathBuf, wrap: Wrap) -> Result<(), Box<dyn Error>> {
             }
             body {
                 // dummy image for odd wrapping
-                @if wrap == Wrap::Odd {
+                @if wrap == &Wrap::Odd {
                     img {}
                 }
                 @for image in images.iter() {
@@ -56,5 +56,9 @@ pub fn run(d: PathBuf, wrap: Wrap) -> Result<(), Box<dyn Error>> {
         }
         .into_string(),
     )?;
+    // run on nested directories
+    for d in paths.iter().filter(|p|p.is_dir()) {
+        run(d, wrap);
+    }
     Ok(())
 }
