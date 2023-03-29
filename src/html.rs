@@ -32,7 +32,18 @@ pub fn run(d: &PathBuf, wrap: &Wrap) -> Result<(), Box<dyn Error>> {
     let mut images: Vec<_> = paths.iter().filter(is_image).flat_map(basename).collect();
     images.sort();
 
-    fs::write(
+    // run on nested directories
+    for d in paths.iter().filter(|p| p.is_dir()) {
+        run(d, wrap)?;
+    }
+
+    // don't write index.html if images
+    println!("{} images in {}", images.len(), &d.to_str().unwrap_or(""));
+    if images.len() == 0 {
+        return Ok(());
+    }
+
+    Ok(fs::write(
         d.join("index.html"),
         html! {
             (DOCTYPE)
@@ -55,10 +66,5 @@ pub fn run(d: &PathBuf, wrap: &Wrap) -> Result<(), Box<dyn Error>> {
             }
         }
         .into_string(),
-    )?;
-    // run on nested directories
-    for d in paths.iter().filter(|p|p.is_dir()) {
-        run(d, wrap);
-    }
-    Ok(())
+    )?)
 }
