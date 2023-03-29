@@ -25,7 +25,7 @@ fn is_image(path: &&PathBuf) -> bool {
 }
 
 /// get basename of path
-fn basename(path: &PathBuf) -> Option<&str> {
+fn basename<'a>(path: &'a &'a PathBuf) -> Option<&'a str> {
     path.file_name().and_then(|p| p.to_str()).and_then(|p| Some(p))
 }
 
@@ -33,8 +33,8 @@ fn basename(path: &PathBuf) -> Option<&str> {
 pub fn run(d: &PathBuf, wrap: &Wrap) -> Result<(), Box<dyn Error>> {
     // get images
     let paths: Vec<_> = fs::read_dir(&d)?.flatten().map(|e| e.path()).collect();
-    let mut images: Vec<_> = paths.iter().filter(is_image).flat_map(basename).collect();
-    images.sort();
+    let mut images: Vec<_> = paths.iter().filter(is_image).collect();
+    images.sort_by_key(|p| p.to_str());
 
     // run on nested directories
     for d in paths.iter().filter(|p| p.is_dir()) {
@@ -64,7 +64,7 @@ pub fn run(d: &PathBuf, wrap: &Wrap) -> Result<(), Box<dyn Error>> {
                 @if wrap == &Wrap::Odd {
                     img {}
                 }
-                @for image in images.iter() {
+                @for image in images.iter().flat_map(basename) {
                     img alt=(image) src=(image) {}
                 }
             }
