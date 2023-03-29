@@ -6,10 +6,12 @@ use maud::{html, DOCTYPE};
 
 use crate::Wrap;
 
+/// minify css
 fn minify(css: &str) -> String {
     css.replace(|ch| matches!(ch, '\n' | '\t'), "")
 }
 
+/// check if path is image (by extension)
 fn is_image(path: &&PathBuf) -> bool {
     let ext = match path.extension() {
         Some(ext) => ext,
@@ -22,10 +24,12 @@ fn is_image(path: &&PathBuf) -> bool {
     matches!(ext, "png" | "jpg" | "jpeg" | "gif" | "avif")
 }
 
+/// get basename of path
 fn basename(path: &PathBuf) -> Option<&str> {
     path.file_name().and_then(|p| p.to_str()).and_then(|p| Some(p))
 }
 
+/// write index.html if image exists recursively
 pub fn run(d: &PathBuf, wrap: &Wrap) -> Result<(), Box<dyn Error>> {
     // get images
     let paths: Vec<_> = fs::read_dir(&d)?.flatten().map(|e| e.path()).collect();
