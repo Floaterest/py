@@ -1,11 +1,13 @@
- html{
+html {
 	background: black;
 	display: flex;
 	justify-content: center;
 }
-body{
+
+body {
 	width: 50%;
 }
-img{
+
+img {
 	border-bottom: 5px #39c5bb solid;
 }
