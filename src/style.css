@@ -5,7 +5,7 @@ html {
 }
 
 body {
-	width: 50%;
+	overflow-x: auto;
 }
 
 img {
