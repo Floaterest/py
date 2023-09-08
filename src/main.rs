@@ -41,7 +41,7 @@ pub enum Wrap {
 fn main() -> Result<(), Box<dyn Error>> {
     let args = Args::parse();
     match args.command {
-        Command::Html { path, wrap } => html::run(&path, &wrap)?,
+        Command::Html { path, wrap } => html::run(&path, wrap)?,
     }
-    Ok(println!("Hello, world!"))
+    Ok(())
 }
