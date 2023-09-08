@@ -30,7 +30,7 @@ fn basename<'a>(path: &'a &'a PathBuf) -> Option<&'a str> {
 }
 
 /// write index.html if image exists recursively
-pub fn run(d: &PathBuf, wrap: &Wrap) -> Result<(), Box<dyn Error>> {
+pub fn run(d: &PathBuf, wrap: Wrap) -> Result<(), Box<dyn Error>> {
     // get images
     let paths: Vec<_> = fs::read_dir(&d)?.flatten().map(|e| e.path()).collect();
     let mut images: Vec<_> = paths.iter().filter(is_image).collect();
@@ -38,7 +38,7 @@ pub fn run(d: &PathBuf, wrap: &Wrap) -> Result<(), Box<dyn Error>> {
 
     // run on nested directories
     for d in paths.iter().filter(|p| p.is_dir()) {
-        run(d, wrap)?;
+        run(d, wrap.clone())?;
     }
 
     // don't write index.html if images
@@ -61,7 +61,7 @@ pub fn run(d: &PathBuf, wrap: &Wrap) -> Result<(), Box<dyn Error>> {
             }
             body {
                 // dummy image for odd wrapping
-                @if wrap == &Wrap::Odd {
+                @if wrap == Wrap::Odd {
                     img {}
                 }
                 @for image in images.iter().flat_map(basename) {
