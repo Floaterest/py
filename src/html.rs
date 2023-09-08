@@ -1,5 +1,7 @@
 use std::{error::Error, fs, path::PathBuf};
 
+use image::{imageops, GenericImageView, Rgba};
+
 const STYLE: &str = include_str!("./style.css");
 const WRAP: &str = include_str!("./wrap.css");
 use maud::{html, DOCTYPE};
@@ -29,6 +31,33 @@ fn basename<'a>(path: &'a &'a PathBuf) -> Option<&'a str> {
     path.file_name().and_then(|p| p.to_str()).and_then(|p| Some(p))
 }
 
+fn guess(path: &[&PathBuf]) -> Result<Wrap, Box<dyn Error>> {
+    let (mut ol, mut or, mut el, mut er) = (0, 0, 0, 0);
+    for (i, p) in path.iter().enumerate() {
+        let img = image::open(p)?;
+        let (w, h) = img.dimensions();
+        let left = imageops::crop_imm(&img, 0, 0, 1, h);
+        let right = imageops::crop_imm(&img, w - 1, 0, 1, h);
+        let (l, r) = if i % 2 == 0 { (&mut el, &mut er) } else { (&mut ol, &mut or) };
+        if left.pixels().all(|(_, _, Rgba(c))| c.iter().all(|&n| n > 200)) {
+            println!("{:?} has left white", &p);
+            *r += 1;
+        }
+        if right.pixels().all(|(_, _, Rgba(c))| c.iter().all(|&n| n > 200)) {
+            println!("{:?} has right white", &p);
+            *l += 1;
+        }
+    }
+    if or > ol && el > er {
+        Ok(Wrap::Odd)
+    } else if ol > or && er > el {
+        Ok(Wrap::Even)
+    } else {
+        dbg!(ol, or, el, er);
+        Err("can't guess wrap".into())
+    }
+}
+
 /// write index.html if image exists recursively
 pub fn run(d: &PathBuf, wrap: Wrap) -> Result<(), Box<dyn Error>> {
     // get images
@@ -46,6 +75,8 @@ pub fn run(d: &PathBuf, wrap: Wrap) -> Result<(), Box<dyn Error>> {
     if images.len() == 0 {
         return Ok(());
     }
+
+    let wrap = if wrap == Wrap::Guess { guess(&images[50..60])? } else { wrap };
 
     Ok(fs::write(
         d.join("index.html"),
