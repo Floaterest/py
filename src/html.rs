@@ -1,4 +1,4 @@
-use std::{error::Error, fs, io::Result, path::PathBuf};
+use std::{error::Error, fs, io::Result, iter::Empty, path::PathBuf};
 
 use crate::walk::walk;
 use image::{imageops, GenericImageView, Rgba};
@@ -60,14 +60,15 @@ fn guess(path: &[&PathBuf]) -> std::result::Result<Wrap, Box<dyn Error>> {
 }
 
 /// write index.html if image exists recursively
-fn index(path: &PathBuf, entries: &[PathBuf], wrap: Wrap) -> Result<()> {
+fn index(path: &PathBuf, entries: &[PathBuf], wrap: Wrap) -> Result<Empty<()>> {
+    let empty: Empty<_> = std::iter::empty();
     let mut images: Vec<_> = entries.iter().filter(is_image).collect();
     images.sort_by_key(|path| path.to_str());
 
     // don't write index.html if images
     println!("{} images in {}", images.len(), &path.to_str().unwrap_or(""));
     if images.len() == 0 {
-        return Ok(());
+        return Ok(empty);
     }
 
     let wrap = if wrap == Wrap::Guess { guess(&images[50..60]).unwrap() } else { wrap };
@@ -96,9 +97,10 @@ fn index(path: &PathBuf, entries: &[PathBuf], wrap: Wrap) -> Result<()> {
         }
         .into_string(),
     )?;
-    Ok(())
+    Ok(empty)
 }
 
 pub fn run(path: &PathBuf, wrap: Wrap) -> Result<()> {
-    walk(path, &mut |path, iter| index(path, iter, wrap))
+    let _ = walk(path, &mut |path, iter| index(path, iter, wrap))?;
+    Ok(())
 }
