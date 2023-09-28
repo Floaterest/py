@@ -1,5 +1,5 @@
 mod html;
-mod walk;
+mod tree;
 
 use std::{error::Error, path::PathBuf};
 

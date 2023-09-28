@@ -1,6 +1,6 @@
-use std::{error::Error, fs, io::Result, iter::Empty, path::PathBuf};
+use std::{error::Error, fs, io::Result, path::PathBuf};
 
-use crate::walk::walk;
+use crate::tree::tree;
 use image::{imageops, GenericImageView, Rgba};
 
 const STYLE: &str = include_str!("./style.css");
@@ -60,8 +60,8 @@ fn guess(path: &[&PathBuf]) -> std::result::Result<Wrap, Box<dyn Error>> {
 }
 
 /// write index.html if image exists recursively
-fn index(path: &PathBuf, entries: &[PathBuf], wrap: Wrap) -> Result<Empty<()>> {
-    let empty: Empty<_> = std::iter::empty();
+fn index(path: &PathBuf, entries: &[PathBuf], wrap: Wrap) -> Result<Vec<()>> {
+    let empty = Vec::new();
     let mut images: Vec<_> = entries.iter().filter(is_image).collect();
     images.sort_by_key(|path| path.to_str());
 
@@ -101,6 +101,6 @@ fn index(path: &PathBuf, entries: &[PathBuf], wrap: Wrap) -> Result<Empty<()>> {
 }
 
 pub fn run(path: &PathBuf, wrap: Wrap) -> Result<()> {
-    let _ = walk(path, &mut |path, iter| index(path, iter, wrap))?;
+    let _ = tree(path, &mut |path, files| Ok(index(path, files, wrap)?));
     Ok(())
 }
