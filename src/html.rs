@@ -32,7 +32,7 @@ fn basename<'a>(path: &'a &'a PathBuf) -> Option<&'a str> {
     path.file_name().and_then(|p| p.to_str()).and_then(|p| Some(p))
 }
 
-fn guess(path: &[&PathBuf]) -> Result<Wrap, Box<dyn Error>> {
+fn guess(path: &[&PathBuf]) -> std::result::Result<Wrap, Box<dyn Error>> {
     let (mut ol, mut or, mut el, mut er) = (0, 0, 0, 0);
     for (i, p) in path.iter().enumerate() {
         let img = image::open(p)?;
@@ -70,7 +70,7 @@ fn index(path: &PathBuf, entries: &[PathBuf], wrap: Wrap) -> Result<()> {
         return Ok(());
     }
 
-    let wrap = if wrap == Wrap::Guess { guess(&images[50..60])? } else { wrap };
+    let wrap = if wrap == Wrap::Guess { guess(&images[50..60]).unwrap() } else { wrap };
 
     fs::write(
         path.join("index.html"),
