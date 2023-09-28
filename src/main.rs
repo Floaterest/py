@@ -1,9 +1,9 @@
 mod html;
+mod walk;
 
 use std::{error::Error, path::PathBuf};
 
 use clap::{Parser, Subcommand, ValueEnum};
-
 
 #[derive(Parser, Debug)]
 struct Args {
@@ -22,7 +22,7 @@ enum Command {
     },
 }
 
-#[derive(ValueEnum, Debug, Clone, PartialEq)]
+#[derive(ValueEnum, Debug, Clone, PartialEq, Copy)]
 pub enum Wrap {
     /// no wrap
     #[clap(alias = "0")]

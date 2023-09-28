@@ -1,5 +1,6 @@
-use std::{error::Error, fs, path::PathBuf};
+use std::{error::Error, fs, io::Result, path::PathBuf};
 
+use crate::walk::walk;
 use image::{imageops, GenericImageView, Rgba};
 
 const STYLE: &str = include_str!("./style.css");
@@ -59,32 +60,25 @@ fn guess(path: &[&PathBuf]) -> Result<Wrap, Box<dyn Error>> {
 }
 
 /// write index.html if image exists recursively
-pub fn run(d: &PathBuf, wrap: Wrap) -> Result<(), Box<dyn Error>> {
-    // get images
-    let paths: Vec<_> = fs::read_dir(&d)?.flatten().map(|e| e.path()).collect();
-    let mut images: Vec<_> = paths.iter().filter(is_image).collect();
-    images.sort_by_key(|p| p.to_str());
-
-    // run on nested directories
-    for d in paths.iter().filter(|p| p.is_dir()) {
-        run(d, wrap.clone())?;
-    }
+fn index(path: &PathBuf, entries: &[PathBuf], wrap: Wrap) -> Result<()> {
+    let mut images: Vec<_> = entries.iter().filter(is_image).collect();
+    images.sort_by_key(|path| path.to_str());
 
     // don't write index.html if images
-    println!("{} images in {}", images.len(), &d.to_str().unwrap_or(""));
+    println!("{} images in {}", images.len(), &path.to_str().unwrap_or(""));
     if images.len() == 0 {
         return Ok(());
     }
 
     let wrap = if wrap == Wrap::Guess { guess(&images[50..60])? } else { wrap };
 
-    Ok(fs::write(
-        d.join("index.html"),
+    fs::write(
+        path.join("index.html"),
         html! {
             (DOCTYPE)
             head {
                 meta charset="utf8";
-                title { (d.file_name().and_then(|p|p.to_str()).unwrap_or("title")) }
+                title { (path.file_name().and_then(|p|p.to_str()).unwrap_or("title")) }
                 style { (minify(STYLE)) }
                 @if matches!(wrap, Wrap::Odd | Wrap::Even) {
                     style { (minify(WRAP)) }
@@ -101,5 +95,10 @@ pub fn run(d: &PathBuf, wrap: Wrap) -> Result<(), Box<dyn Error>> {
             }
         }
         .into_string(),
-    )?)
+    )?;
+    Ok(())
+}
+
+pub fn run(path: &PathBuf, wrap: Wrap) -> Result<()> {
+    walk(path, &mut |path, iter| index(path, iter, wrap))
 }
