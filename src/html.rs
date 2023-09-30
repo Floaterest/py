@@ -24,7 +24,6 @@ pub enum Wrap {
     Guess,
 }
 
-
 /// minify css
 fn minify(css: &str) -> String {
     css.replace(|ch| matches!(ch, '\n' | '\t'), "")
@@ -117,6 +116,6 @@ fn index(path: &PathBuf, entries: &[PathBuf], wrap: Wrap) -> Result<Vec<()>> {
 }
 
 pub fn run(path: &PathBuf, wrap: Wrap) -> Result<()> {
-    let _ = tree(path, &mut |path, files| Ok(index(path, files, wrap)?));
+    let _ = tree(path, &mut |path, files| index(path, files, wrap));
     Ok(())
 }
