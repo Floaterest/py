@@ -1,7 +1,7 @@
 mod html;
 mod tree;
 
-use std::{error::Error, path::PathBuf};
+use std::{error::Error, io::Error, path::PathBuf};
 
 use clap::{Parser, Subcommand};
 use html::Wrap;
@@ -23,7 +23,7 @@ enum Command {
     },
 }
 
-fn main() -> Result<(), Box<dyn Error>> {
+fn main() -> Result<()> {
     let args = Args::parse();
     match args.command {
         Command::Html { path, wrap } => html::run(&path, wrap)?,
