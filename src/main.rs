@@ -1,7 +1,7 @@
 mod html;
 mod tree;
 
-use std::{error::Error, io::Error, path::PathBuf};
+use std::{io::Result, path::PathBuf};
 
 use clap::{Parser, Subcommand};
 use html::Wrap;
