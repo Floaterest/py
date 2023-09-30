@@ -1,13 +1,29 @@
 use std::{error::Error, fs, io::Result, path::PathBuf};
 
 use crate::tree::tree;
+use clap::ValueEnum;
 use image::{imageops, GenericImageView, Rgba};
 
 const STYLE: &str = include_str!("./style.css");
 const WRAP: &str = include_str!("./wrap.css");
 use maud::{html, DOCTYPE};
 
-use crate::Wrap;
+#[derive(ValueEnum, Debug, Clone, PartialEq, Copy)]
+pub enum Wrap {
+    /// no wrap
+    #[clap(alias = "0")]
+    None,
+    /// wrap after odd pages
+    #[clap(alias = "1")]
+    Odd,
+    /// wrap after even pages
+    #[clap(alias = "2")]
+    Even,
+    #[clap(alias = "g")]
+    /// guess between odd and even
+    Guess,
+}
+
 
 /// minify css
 fn minify(css: &str) -> String {
