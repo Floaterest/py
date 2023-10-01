@@ -7,6 +7,7 @@ use std::{fs, iter};
 
 const PATH: &str = "/tmp/tree.txt";
 
+/// read paths until no duplicates
 fn input(path: &PathBuf) -> Result<Vec<PathBuf>> {
     let mut line = String::new();
     loop {
@@ -26,13 +27,16 @@ fn input(path: &PathBuf) -> Result<Vec<PathBuf>> {
 }
 
 pub fn run(path: &PathBuf) -> Result<()> {
+    // get paths and write to file
     let xs = tree(path, &mut |_, files| Ok(files.to_vec()))?;
     let xs: Vec<_> = xs.into_iter().flatten().sorted().collect();
     let t = xs.iter().flat_map(|p| p.strip_prefix(path).ok()).flat_map(|p| p.to_str()).join("\n");
     fs::write(PATH, t)?;
     println!("Tree written to {PATH}, press enter to continue: ");
+    // read path from file
     let ys = input(&PathBuf::from(PATH))?;
     let ys: Vec<_> = ys.iter().map(|p| Path::join(path, p)).collect();
+
     for (x, y) in iter::zip(xs.iter(), ys.iter()) {
         let (sx, sy) = (x.strip_prefix(path).unwrap(), y.strip_prefix(path).unwrap());
         let (sx, sy) = (sx.to_str().unwrap(), sy.to_str().unwrap());
