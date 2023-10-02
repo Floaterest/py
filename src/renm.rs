@@ -50,5 +50,14 @@ pub fn run(path: &PathBuf) -> Result<()> {
         fs::rename(x, y)?;
         println!("{sx} -> {sy}");
     }
+
+    // remove empty dir
+    tree(path, &mut |dir, _| match dir.read_dir()?.next() {
+        Some(_) => Ok(()),
+        None => {
+            println!("Remove {}", dir.to_str().unwrap());
+            fs::remove_dir(dir)
+        }
+    })?;
     Ok(())
 }
