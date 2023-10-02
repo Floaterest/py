@@ -2,23 +2,23 @@ use crate::tree::tree;
 use itertools::Itertools;
 use std::fs::DirBuilder;
 use std::io::Result;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use std::{fs, iter};
 
 const PATH: &str = "/tmp/tree.txt";
 
 /// read paths until no duplicates
-fn input(path: &PathBuf) -> Result<Vec<PathBuf>> {
+fn input(path: &PathBuf) -> Result<Vec<String>> {
     let mut line = String::new();
     loop {
         std::io::stdin().read_line(&mut line)?;
         let content = fs::read_to_string(path)?;
-        let content: Vec<_> = content.split("\n").map(PathBuf::from).collect();
+        let content: Vec<_> = content.split("\n").map(String::from).collect();
         let mut dup = content.iter().duplicates();
         if let Some(d) = dup.next() {
             println!("{} contains duplicates! Press enter to continue: ", path.to_str().unwrap());
             for line in iter::once(d).chain(dup) {
-                println!("{}", line.to_str().unwrap());
+                println!("{line}");
             }
         } else {
             return Ok(content);
@@ -35,19 +35,23 @@ pub fn run(path: &PathBuf) -> Result<()> {
     println!("Tree written to {PATH}, press enter to continue: ");
     // read path from file
     let ys = input(&PathBuf::from(PATH))?;
-    let ys: Vec<_> = ys.iter().map(|p| Path::join(path, p)).collect();
 
-    for (x, y) in iter::zip(xs.iter(), ys.iter()) {
-        let (sx, sy) = (x.strip_prefix(path).unwrap(), y.strip_prefix(path).unwrap());
-        let (sx, sy) = (sx.to_str().unwrap(), sy.to_str().unwrap());
-        if x == y {
+    for (x, sy) in iter::zip(xs.iter(), ys.iter()) {
+        if sy.is_empty() {
+            println!("Remove {}", x.to_str().unwrap());
+            fs::remove_file(x)?;
+            continue;
+        }
+        let y = path.join(sy);
+        let sx = x.strip_prefix(path).unwrap().to_str().unwrap();
+        if x == &y {
             println!("Skip {sx}");
             continue;
         }
         if let Some(parent) = y.parent() {
             DirBuilder::new().recursive(true).create(parent)?;
         }
-        fs::rename(x, y)?;
+        fs::rename(x, &y)?;
         println!("{sx} -> {sy}");
     }
 
