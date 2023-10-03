@@ -101,7 +101,8 @@ fn index(path: &PathBuf, entries: &[PathBuf], wrap: Wrap) -> Result<Vec<()>> {
     }
 
     let mut body = Body::builder();
-    if matches!(wrap, Wrap::Even | Wrap::Odd) {
+    // dummy image for odd wrapping
+    if matches!(wrap, Wrap::Odd) {
         body.image(|img| img);
     }
     for src in images.iter() {
