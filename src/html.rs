@@ -1,12 +1,11 @@
-use std::{error::Error, fs, io::Result, path::PathBuf};
-
 use crate::tree::tree;
 use clap::ValueEnum;
+use html::{metadata::Head, root::*};
 use image::{imageops, GenericImageView, Rgba};
+use std::{error::Error, fs, io::Result, path::PathBuf};
 
 const STYLE: &str = include_str!("./style.css");
 const WRAP: &str = include_str!("./wrap.css");
-use maud::{html, DOCTYPE};
 
 #[derive(ValueEnum, Debug, Clone, PartialEq, Copy)]
 pub enum Wrap {
@@ -43,8 +42,11 @@ fn is_image(path: &&PathBuf) -> bool {
 }
 
 /// get basename of path
-fn basename<'a>(path: &'a &'a PathBuf) -> Option<&'a str> {
-    path.file_name().and_then(|p| p.to_str()).and_then(|p| Some(p))
+fn basename(path: &PathBuf) -> String {
+    // path.file_name().and_then(|p| p.to_str()).and_then(|p| Some(p))
+    let s = path.file_name().unwrap();
+    let s = s.to_str().unwrap();
+    String::from(s)
 }
 
 fn guess(path: &[&PathBuf]) -> std::result::Result<Wrap, Box<dyn Error>> {
@@ -87,35 +89,34 @@ fn index(path: &PathBuf, entries: &[PathBuf], wrap: Wrap) -> Result<Vec<()>> {
     }
 
     let wrap = if wrap == Wrap::Guess { guess(&images[50..60]).unwrap() } else { wrap };
+    let title = path.file_name();
+    let title = title.and_then(|p| p.to_str()).unwrap_or("Title");
 
-    fs::write(
-        path.join("index.html"),
-        html! {
-            (DOCTYPE)
-            head {
-                meta charset="utf8";
-                title { (path.file_name().and_then(|p|p.to_str()).unwrap_or("title")) }
-                style { (minify(STYLE)) }
-                @if matches!(wrap, Wrap::Odd | Wrap::Even) {
-                    style { (minify(WRAP)) }
-                }
-            }
-            body {
-                // dummy image for odd wrapping
-                @if wrap == Wrap::Odd {
-                    img {}
-                }
-                @for image in images.iter().flat_map(basename) {
-                    img alt=(image) src=(image) {}
-                }
-            }
-        }
-        .into_string(),
-    )?;
+    let mut head = Head::builder();
+    head.meta(|meta| meta.charset("utf8"));
+    head.title(|t| t.text(String::from(title)));
+    head.style(|style| style.text(minify(STYLE)));
+    if matches!(wrap, Wrap::Odd | Wrap::Even) {
+        head.style(|style| style.text(minify(WRAP)));
+    }
+
+    let mut body = Body::builder();
+    if matches!(wrap, Wrap::Even | Wrap::Odd) {
+        body.image(|img| img);
+    }
+    for src in images.iter() {
+        let src = basename(&PathBuf::from(src));
+        body.image(|img| img.alt(src.clone()).src(src));
+    }
+
+    let mut html = Html::builder();
+    html.push(head.build());
+    html.push(body.build());
+    fs::write(path.join("index.html"), html.build().to_string())?;
     Ok(empty)
 }
 
 pub fn run(path: &PathBuf, wrap: Wrap) -> Result<()> {
-    let _ = tree(path, &mut |path, files| index(path, files, wrap));
+    let _ = tree(path, &mut |path, files| index(path, files, wrap))?;
     Ok(())
 }

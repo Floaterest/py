@@ -1,3 +1,4 @@
+#![recursion_limit = "512"]
 mod html;
 mod renm;
 mod tree;
