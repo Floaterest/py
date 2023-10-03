@@ -1,9 +1,6 @@
 use crate::tree::tree;
 use itertools::Itertools;
-use std::fs::DirBuilder;
-use std::io::Result;
-use std::path::PathBuf;
-use std::{fs, iter};
+use std::{fs, fs::DirBuilder, io::Result, iter, path::PathBuf};
 
 const PATH: &str = "/tmp/tree.txt";
 
