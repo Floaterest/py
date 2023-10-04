@@ -20,8 +20,8 @@ enum Command {
         /// wrap option
         #[arg(short, long, default_value = "0")]
         wrap: Wrap,
-        /// path to look for images (recursive)
-        path: PathBuf,
+        /// paths to look for images (recursive)
+        paths: Vec<PathBuf>,
     },
     Renm {
         /// root
@@ -32,7 +32,11 @@ enum Command {
 fn main() -> Result<()> {
     let args = Args::parse();
     match args.command {
-        Command::Html { path, wrap } => html::run(&path, wrap)?,
+        Command::Html { paths, wrap } => {
+            for path in paths.iter() {
+                html::run(&path, wrap)?
+            }
+        }
         Command::Renm { path } => renm::run(&path)?,
     }
     Ok(())
