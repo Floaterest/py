@@ -38,7 +38,7 @@ fn is_image(path: &&PathBuf) -> bool {
         Some(ext) => ext,
         None => return false,
     };
-    matches!(ext, "png" | "jpg" | "jpeg" | "gif" | "avif")
+    matches!(ext.to_lowercase().as_str(), "png" | "jpg" | "jpeg" | "gif" | "avif")
 }
 
 /// get basename of path
