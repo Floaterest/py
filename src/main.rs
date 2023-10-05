@@ -1,7 +1,7 @@
 #![recursion_limit = "512"]
+mod comm;
 mod html;
 mod renm;
-mod tree;
 
 use std::{io::Result, path::PathBuf};
 

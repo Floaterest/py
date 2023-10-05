@@ -1,4 +1,4 @@
-use crate::tree::tree;
+use crate::comm::{is_image, tree};
 use clap::ValueEnum;
 use html::{metadata::Head, root::*};
 use image::{imageops, GenericImageView, Rgba};
@@ -26,19 +26,6 @@ pub enum Wrap {
 /// minify css
 fn minify(css: &str) -> String {
     css.replace(|ch| matches!(ch, '\n' | '\t'), "")
-}
-
-/// check if path is image (by extension)
-fn is_image(path: &&PathBuf) -> bool {
-    let ext = match path.extension() {
-        Some(ext) => ext,
-        None => return false,
-    };
-    let ext = match ext.to_str() {
-        Some(ext) => ext,
-        None => return false,
-    };
-    matches!(ext.to_lowercase().as_str(), "png" | "jpg" | "jpeg" | "gif" | "avif")
 }
 
 /// get basename of path
