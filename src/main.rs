@@ -2,6 +2,7 @@
 mod comm;
 mod html;
 mod renm;
+mod splt;
 
 use std::{io::Result, path::PathBuf};
 
@@ -27,6 +28,10 @@ enum Command {
         /// root
         path: PathBuf,
     },
+    Splt {
+        /// root
+        path: PathBuf,
+    },
 }
 
 fn main() -> Result<()> {
@@ -38,6 +43,7 @@ fn main() -> Result<()> {
             }
         }
         Command::Renm { path } => renm::run(&path)?,
+        Command::Splt { path } => splt::run(&path)?,
     }
     Ok(())
 }
