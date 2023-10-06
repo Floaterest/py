@@ -6,6 +6,7 @@ use std::{error::Error, fs, io::Result, path::PathBuf};
 
 const STYLE: &str = include_str!("./style.css");
 const WRAP: &str = include_str!("./wrap.css");
+const ZERO: &str = include_str!("./zero.css");
 
 #[derive(ValueEnum, Debug, Clone, PartialEq, Copy)]
 pub enum Wrap {
@@ -78,14 +79,13 @@ fn index(path: &PathBuf, entries: &[PathBuf], wrap: Wrap) -> Result<Vec<()>> {
     let wrap = if wrap == Wrap::Guess { guess(&images[50..60]).unwrap() } else { wrap };
     let title = path.file_name();
     let title = title.and_then(|p| p.to_str()).unwrap_or("Title");
-
-    let mut head = Head::builder();
-    head.meta(|meta| meta.charset("utf8"));
-    head.title(|t| t.text(String::from(title)));
-    head.style(|style| style.text(minify(STYLE)));
-    if matches!(wrap, Wrap::Odd | Wrap::Even) {
-        head.style(|style| style.text(minify(WRAP)));
-    }
+    let style = minify(if matches!(wrap, Wrap::Odd | Wrap::Even) { WRAP } else { ZERO });
+    let head = Head::builder()
+        .meta(|meta| meta.charset("utf8"))
+        .title(|t| t.text(String::from(title)))
+        .style(|style| style.text(minify(STYLE)))
+        .style(|s| s.text(style))
+        .build();
 
     let mut body = Body::builder();
     // dummy image for odd wrapping
@@ -98,7 +98,7 @@ fn index(path: &PathBuf, entries: &[PathBuf], wrap: Wrap) -> Result<Vec<()>> {
     }
 
     let mut html = Html::builder();
-    html.push(head.build());
+    html.push(head);
     html.push(body.build());
     fs::write(path.join("index.html"), html.build().to_string())?;
     Ok(empty)
