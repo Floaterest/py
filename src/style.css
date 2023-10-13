@@ -1,11 +1,13 @@
- html{
+html {
 	background: black;
 	display: flex;
 	justify-content: center;
 }
-body{
-	width: 50%;
+
+body {
+	overflow-x: auto;
 }
-img{
+
+img {
 	border-bottom: 5px #39c5bb solid;
 }
