@@ -1,12 +1,28 @@
-use std::{error::Error, fs, path::PathBuf};
+use std::{error::Error, fs, io::Result, path::PathBuf};
 
+use crate::tree::tree;
+use clap::ValueEnum;
 use image::{imageops, GenericImageView, Rgba};
 
 const STYLE: &str = include_str!("./style.css");
 const WRAP: &str = include_str!("./wrap.css");
 use maud::{html, DOCTYPE};
 
-use crate::Wrap;
+#[derive(ValueEnum, Debug, Clone, PartialEq, Copy)]
+pub enum Wrap {
+    /// no wrap
+    #[clap(alias = "0")]
+    None,
+    /// wrap after odd pages
+    #[clap(alias = "1")]
+    Odd,
+    /// wrap after even pages
+    #[clap(alias = "2")]
+    Even,
+    #[clap(alias = "g")]
+    /// guess between odd and even
+    Guess,
+}
 
 /// minify css
 fn minify(css: &str) -> String {
@@ -31,7 +47,7 @@ fn basename<'a>(path: &'a &'a PathBuf) -> Option<&'a str> {
     path.file_name().and_then(|p| p.to_str()).and_then(|p| Some(p))
 }
 
-fn guess(path: &[&PathBuf]) -> Result<Wrap, Box<dyn Error>> {
+fn guess(path: &[&PathBuf]) -> std::result::Result<Wrap, Box<dyn Error>> {
     let (mut ol, mut or, mut el, mut er) = (0, 0, 0, 0);
     for (i, p) in path.iter().enumerate() {
         let img = image::open(p)?;
@@ -59,32 +75,26 @@ fn guess(path: &[&PathBuf]) -> Result<Wrap, Box<dyn Error>> {
 }
 
 /// write index.html if image exists recursively
-pub fn run(d: &PathBuf, wrap: Wrap) -> Result<(), Box<dyn Error>> {
-    // get images
-    let paths: Vec<_> = fs::read_dir(&d)?.flatten().map(|e| e.path()).collect();
-    let mut images: Vec<_> = paths.iter().filter(is_image).collect();
-    images.sort_by_key(|p| p.to_str());
-
-    // run on nested directories
-    for d in paths.iter().filter(|p| p.is_dir()) {
-        run(d, wrap.clone())?;
-    }
+fn index(path: &PathBuf, entries: &[PathBuf], wrap: Wrap) -> Result<Vec<()>> {
+    let empty = Vec::new();
+    let mut images: Vec<_> = entries.iter().filter(is_image).collect();
+    images.sort_by_key(|path| path.to_str());
 
     // don't write index.html if images
-    println!("{} images in {}", images.len(), &d.to_str().unwrap_or(""));
+    println!("{} images in {}", images.len(), &path.to_str().unwrap_or(""));
     if images.len() == 0 {
-        return Ok(());
+        return Ok(empty);
     }
 
-    let wrap = if wrap == Wrap::Guess { guess(&images[50..60])? } else { wrap };
+    let wrap = if wrap == Wrap::Guess { guess(&images[50..60]).unwrap() } else { wrap };
 
-    Ok(fs::write(
-        d.join("index.html"),
+    fs::write(
+        path.join("index.html"),
         html! {
             (DOCTYPE)
             head {
                 meta charset="utf8";
-                title { (d.file_name().and_then(|p|p.to_str()).unwrap_or("title")) }
+                title { (path.file_name().and_then(|p|p.to_str()).unwrap_or("title")) }
                 style { (minify(STYLE)) }
                 @if matches!(wrap, Wrap::Odd | Wrap::Even) {
                     style { (minify(WRAP)) }
@@ -101,5 +111,11 @@ pub fn run(d: &PathBuf, wrap: Wrap) -> Result<(), Box<dyn Error>> {
             }
         }
         .into_string(),
-    )?)
+    )?;
+    Ok(empty)
+}
+
+pub fn run(path: &PathBuf, wrap: Wrap) -> Result<()> {
+    let _ = tree(path, &mut |path, files| index(path, files, wrap));
+    Ok(())
 }
