@@ -11,7 +11,7 @@ fn input(path: &PathBuf) -> Result<Vec<String>> {
         std::io::stdin().read_line(&mut line)?;
         let content = fs::read_to_string(path)?;
         let content: Vec<_> = content.split("\n").map(String::from).collect();
-        let mut dup = content.iter().duplicates();
+        let mut dup = content.iter().filter(|s| !s.is_empty()).duplicates();
         if let Some(d) = dup.next() {
             println!("{} contains duplicates! Press enter to continue: ", path.to_str().unwrap());
             for line in iter::once(d).chain(dup) {
@@ -32,6 +32,9 @@ pub fn run(path: &PathBuf) -> Result<()> {
     println!("Tree written to {PATH}, press enter to continue: ");
     // read path from file
     let ys = input(&PathBuf::from(PATH))?;
+    if ys.len() != xs.len() {
+        panic!("Not same length!");
+    }
 
     for (x, sy) in iter::zip(xs.iter(), ys.iter()) {
         if sy.is_empty() {
