@@ -13,3 +13,16 @@ pub fn tree<T, F: Fn(&PB, &[PB]) -> Result<T>>(path: &PB, f: &mut F) -> Result<V
     result.push(f(path, &files)?);
     Ok(result)
 }
+
+/// check if path is image (by extension)
+pub fn is_image(path: &&PB) -> bool {
+    let ext = match path.extension() {
+        Some(ext) => ext,
+        None => return false,
+    };
+    let ext = match ext.to_str() {
+        Some(ext) => ext,
+        None => return false,
+    };
+    matches!(ext.to_lowercase().as_str(), "png" | "jpg" | "jpeg" | "gif" | "avif")
+}
