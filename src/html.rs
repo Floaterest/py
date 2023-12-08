@@ -7,6 +7,7 @@ use std::{error::Error, fs, io::Result, path::PathBuf};
 const STYLE: &str = include_str!("./style.css");
 const WRAP: &str = include_str!("./wrap.css");
 const ZERO: &str = include_str!("./zero.css");
+const SCROLL: &str = include_str!("./scroll.js");
 
 #[derive(ValueEnum, Debug, Clone, PartialEq, Copy)]
 pub enum Wrap {
@@ -85,6 +86,7 @@ fn index(path: &PathBuf, entries: &[PathBuf], wrap: Wrap) -> Result<Vec<()>> {
         .title(|t| t.text(String::from(title)))
         .style(|style| style.text(minify(STYLE)))
         .style(|s| s.text(style))
+        .script(|s|s.text(minify(SCROLL)))
         .build();
 
     let mut body = Body::builder();
