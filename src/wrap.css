@@ -1,8 +1,12 @@
 body {
-	width: 50em;
 	direction: rtl;
 }
 
 img {
 	width: 50%;
+}
+
+p {
+	display: flex;
+	margin: 0;
 }

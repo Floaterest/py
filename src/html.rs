@@ -7,7 +7,7 @@ use std::{error::Error, fs, io::Result, path::PathBuf};
 const STYLE: &str = include_str!("./style.css");
 const WRAP: &str = include_str!("./wrap.css");
 const ZERO: &str = include_str!("./zero.css");
-const SCROLL: &str = include_str!("./scroll.js");
+// const SCROLL: &str = include_str!("./scroll.js");
 
 #[derive(ValueEnum, Debug, Clone, PartialEq, Copy)]
 pub enum Wrap {
@@ -23,11 +23,6 @@ pub enum Wrap {
     #[clap(alias = "g")]
     /// guess between odd and even
     Guess,
-}
-
-/// minify css
-fn minify(css: &str) -> String {
-    css.replace(|ch| matches!(ch, '\n' | '\t'), "")
 }
 
 /// get basename of path
@@ -80,29 +75,59 @@ fn index(path: &PathBuf, entries: &[PathBuf], wrap: Wrap) -> Result<Vec<()>> {
     let wrap = if wrap == Wrap::Guess { guess(&images[50..60]).unwrap() } else { wrap };
     let title = path.file_name();
     let title = title.and_then(|p| p.to_str()).unwrap_or("Title");
-    let style = minify(if matches!(wrap, Wrap::Odd | Wrap::Even) { WRAP } else { ZERO });
+    let style = if matches!(wrap, Wrap::Odd | Wrap::Even) { WRAP } else { ZERO };
     let head = Head::builder()
         .meta(|meta| meta.charset("utf8"))
         .title(|t| t.text(String::from(title)))
-        .style(|style| style.text(minify(STYLE)))
+        .style(|style| style.text(STYLE))
         .style(|s| s.text(style))
-        .script(|s|s.text(minify(SCROLL)))
+        // .script(|s|s.text(SCROLL))
         .build();
 
     let mut body = Body::builder();
     // dummy image for odd wrapping
-    if matches!(wrap, Wrap::Odd) {
-        body.image(|img| img);
-    }
-    for src in images.iter() {
-        let src = basename(&PathBuf::from(src));
-        body.image(|img| img.alt(src.clone()).src(src));
+    // if matches!(wrap, Wrap::Odd) {
+    //     // body.image(|img| img);
+    // }
+    match wrap {
+        Wrap::None => {
+            for src in images.iter() {
+                let src = basename(&PathBuf::from(src));
+                body.division(|p| p.image(|img| img.alt(src.clone()).src(src)));
+            }
+        }
+        Wrap::Even => {
+            let right = images.iter().step_by(2);
+            let left = images.iter().skip(1).step_by(2);
+            for (r, l) in right.zip(left) {
+                let l = basename(&PathBuf::from(l));
+                let r = basename(&PathBuf::from(r));
+                body.paragraph(|p| {
+                    p.image(|img| img.alt(r.clone()).src(r)).image(|img| img.alt(l.clone()).src(l))
+                });
+            }
+        }
+        Wrap::Odd => {
+            let base = basename(&PathBuf::from(images[0].clone()));
+            body.paragraph(|p|p.image(|img|img.alt(base.clone()).src(base)));
+            let right = images.iter().skip(1).step_by(2);
+            let left = images.iter().skip(2).step_by(2);
+            for (r, l) in right.zip(left) {
+                let l = basename(&PathBuf::from(l));
+                let r = basename(&PathBuf::from(r));
+                body.paragraph(|p| {
+                    p.image(|img| img.alt(r.clone()).src(r)).image(|img| img.alt(l.clone()).src(l))
+                });
+            }
+        }
+        Wrap::Guess => unreachable!(),
     }
 
     let mut html = Html::builder();
     html.push(head);
     html.push(body.build());
-    fs::write(path.join("index.html"), html.build().to_string())?;
+    let s = format!("{:?}", html.build());
+    fs::write(path.join("index.html"), s)?;
     Ok(empty)
 }
 

@@ -35,7 +35,6 @@ pub fn run(path: &PathBuf) -> Result<()> {
     if ys.len() != xs.len() {
         panic!("Not same length!");
     }
-
     for (x, sy) in iter::zip(xs.iter(), ys.iter()) {
         if sy.is_empty() {
             println!("Remove {}", x.to_str().unwrap());
