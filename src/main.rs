@@ -22,6 +22,7 @@ enum Command {
         #[arg(short, long, default_value = "0")]
         wrap: Wrap,
         /// paths to look for images (recursive)
+        #[arg(default_value = ".")]
         paths: Vec<PathBuf>,
     },
     Renm {

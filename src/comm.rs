@@ -24,5 +24,5 @@ pub fn is_image(path: &&PB) -> bool {
         Some(ext) => ext,
         None => return false,
     };
-    matches!(ext.to_lowercase().as_str(), "png" | "jpg" | "jpeg" | "gif" | "avif")
+    matches!(ext.to_lowercase().as_str(), "png" | "jpg" | "jpeg" | "gif" | "avif" | "webp")
 }
