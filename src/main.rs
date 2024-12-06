@@ -28,6 +28,8 @@ enum Command {
     Renm {
         /// root
         path: PathBuf,
+        /// file to write tree
+        tree: PathBuf,
     },
     Splt {
         /// root
@@ -43,7 +45,7 @@ fn main() -> Result<()> {
                 html::run(&path, wrap)?
             }
         }
-        Command::Renm { path } => renm::run(&path)?,
+        Command::Renm { path, tree } => renm::run(&path, &tree)?,
         Command::Splt { path } => splt::run(&path)?,
     }
     Ok(())

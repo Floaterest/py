@@ -2,7 +2,6 @@ use crate::comm::tree;
 use itertools::Itertools;
 use std::{fs, fs::DirBuilder, io::Result, iter, path::PathBuf};
 
-const PATH: &str = "/tmp/tree.txt";
 
 /// read paths until no duplicates
 fn input(path: &PathBuf) -> Result<Vec<String>> {
@@ -23,18 +22,15 @@ fn input(path: &PathBuf) -> Result<Vec<String>> {
     }
 }
 
-pub fn run(path: &PathBuf) -> Result<()> {
+pub fn run(path: &PathBuf, tr: &PathBuf) -> Result<()> {
     // get paths and write to file
     let xs = tree(path, &mut |_, files| Ok(files.to_vec()))?;
     let xs: Vec<_> = xs.into_iter().flatten().sorted().collect();
-    let t = xs.iter().flat_map(|p| p.strip_prefix(path).ok()).flat_map(|p| p.to_str()).join("\n");
-    fs::write(PATH, t)?;
-    println!("Tree written to {PATH}, press enter to continue: ");
+    let mut t = xs.iter().flat_map(|p| p.strip_prefix(path).ok()).flat_map(|p| p.to_str()).join("\n");
+    fs::write(tr, t)?;
+    println!("Tree written to {tr:?}, press enter to continue: ");
     // read path from file
-    let ys = input(&PathBuf::from(PATH))?;
-    if ys.len() != xs.len() {
-        panic!("Not same length!");
-    }
+    let ys = input(&PathBuf::from(tr))?;
     for (x, sy) in iter::zip(xs.iter(), ys.iter()) {
         if sy.is_empty() {
             println!("Remove {}", x.to_str().unwrap());
