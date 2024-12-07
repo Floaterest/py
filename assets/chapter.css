@@ -1,0 +1,53 @@
+img {
+    width: 100%;
+}
+body, button {
+    color: white;
+}
+
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    user-select: none;
+    z-index: 1;
+    padding: 1em;
+
+    overflow-y: scroll;
+    height: 100%;
+}
+
+nav div, img {
+    cursor: pointer;
+}
+
+button {
+    display: block;
+    border: none;
+    text-align: left;
+    width: 100%;
+    background: none;
+    font-size: xxx-large;
+    cursor: pointer;
+}
+
+button.selected {
+    color: red;
+}
+
+button.hidden {
+    opacity: 0.5;
+}
+
+section.hidden {
+    display: none;
+}
+
+.dimmed>section {
+    filter: brightness(0.3);
+}
+
+:not(.dimmed)>nav {
+    display: none;
+}

@@ -26,7 +26,7 @@ pub fn run(path: &PathBuf, tr: &PathBuf) -> Result<()> {
     // get paths and write to file
     let xs = tree(path, &mut |_, files| Ok(files.to_vec()))?;
     let xs: Vec<_> = xs.into_iter().flatten().sorted().collect();
-    let mut t = xs.iter().flat_map(|p| p.strip_prefix(path).ok()).flat_map(|p| p.to_str()).join("\n");
+    let t = xs.iter().flat_map(|p| p.strip_prefix(path).ok()).flat_map(|p| p.to_str()).join("\n");
     fs::write(tr, t)?;
     println!("Tree written to {tr:?}, press enter to continue: ");
     // read path from file
