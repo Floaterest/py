@@ -10,6 +10,7 @@ use clap::{Parser, Subcommand};
 use html::Wrap;
 
 #[derive(Parser, Debug)]
+#[command(version = "2024-12-06")]
 struct Args {
     #[command(subcommand)]
     command: Command,
