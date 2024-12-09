@@ -2,7 +2,6 @@ use crate::comm::tree;
 use itertools::Itertools;
 use std::{fs, fs::DirBuilder, io::Result, iter, path::PathBuf};
 
-
 /// read paths until no duplicates
 fn input(path: &PathBuf) -> Result<Vec<String>> {
     let mut line = String::new();
@@ -24,8 +23,8 @@ fn input(path: &PathBuf) -> Result<Vec<String>> {
 
 pub fn run(path: &PathBuf, tr: &PathBuf) -> Result<()> {
     // get paths and write to file
-    let xs = tree(path, &mut |_, files| Ok(files.to_vec()))?;
-    let xs: Vec<_> = xs.into_iter().flatten().sorted().collect();
+    let xs: Vec<Vec<_>> = tree(path, &mut |d, fs| Ok(fs.iter().map(|f| d.join(f)).collect()))?;
+    let xs: Vec<_> = xs.iter().flatten().sorted().collect();
     let t = xs.iter().flat_map(|p| p.strip_prefix(path).ok()).flat_map(|p| p.to_str()).join("\n");
     fs::write(tr, t)?;
     println!("Tree written to {tr:?}, press enter to continue: ");
@@ -39,7 +38,7 @@ pub fn run(path: &PathBuf, tr: &PathBuf) -> Result<()> {
         }
         let y = path.join(sy);
         let sx = x.strip_prefix(path).unwrap().to_str().unwrap();
-        if x == &y {
+        if *x == &y {
             println!("Skip {sx}");
             continue;
         }

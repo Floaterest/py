@@ -1,24 +1,23 @@
 img {
     width: 100%;
 }
-body, button {
+
+body,
+button {
     color: white;
 }
 
 nav {
     position: fixed;
-    top: 0;
-    left: 0;
-
     user-select: none;
     z-index: 1;
     padding: 1em;
 
     overflow-y: scroll;
-    height: 100%;
 }
 
-nav div, img {
+nav div,
+img {
     cursor: pointer;
 }
 
@@ -28,7 +27,7 @@ button {
     text-align: left;
     width: 100%;
     background: none;
-    font-size: xxx-large;
+    font-size: 6em;
     cursor: pointer;
 }
 
@@ -37,17 +36,17 @@ button.selected {
 }
 
 button.hidden {
-    opacity: 0.5;
+    opacity: 0.25;
 }
 
 section.hidden {
     display: none;
 }
 
-.dimmed>section {
-    filter: brightness(0.3);
+.dimmed section {
+    filter: brightness(0.25);
 }
 
 :not(.dimmed)>nav {
-    display: none;
+    display: none !important;
 }

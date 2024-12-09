@@ -30,6 +30,7 @@ enum Command {
         /// root
         path: PathBuf,
         /// file to write tree
+        #[arg(default_value = "/tmp/tree.txt")]
         tree: PathBuf,
     },
     Splt {
